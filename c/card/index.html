@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Cache-Control" value="no-cache">
+<title>css版卡片翻转</title>
+<script src="/js/jquery-3.2.1.js"></script>
+<script src="/js/ctools.js"></script>
+<style>
+.mask {
+	position: fixed;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	background: linear-gradient(0deg, rgba(0,0,0,0.4), rgba(0,0,0,0.3))
+}
+body {text-align: center;}
+.view-window, .card, .front, .after {
+ transform-style: preserve-3d;
+}
+.view-window {
+	transform-style: preserve-3d;
+	perspective: 1000px;
+	height: 800px;
+}
+.card-area {
+	display: inline-block;
+	width: 500px;
+	height: 500px;
+}
+.card {
+	position: relative;
+	z-index: 0;
+	width: 500px;
+	height: 500px;
+	transition: all 0.5s;
+}
+.card.onfront {
+	animation: show 1.2s both ease-out reverse;
+	z-index: 1;
+}
+.card.onafter {
+	animation: show 1.2s both ease-in-out;
+	z-index: 2;
+}
+.card > .front, .card > .after {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	text-align: center;
+	transform-origin: 50% 100%;
+	overflow: hidden;
+}
+.front {
+	background: #09f;
+	z-index: 2;
+}
+.after {
+	background: #f90;
+	transform: rotateY(180deg);
+	z-index: 1;
+}
+.onfront.front, .onafter .after {
+	z-index: 2;
+}
+.onfront.after, .onafter .front {
+	z-index: 1;
+}
+.center {
+	position: absolute;  
+    z-index: 10;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+}
+@keyframes show {
+	0% {
+		transform: translateZ(0) rotateY(0);
+		width: 500px;
+	}
+	70% {
+		transform: translateZ(500px) rotateY(640deg);
+		width: 500px;
+	}
+	100% {
+		transform: translateZ(0.00000001px) rotateY(900deg);
+		width: 1000px;
+	}
+}
+</style>
+</head>
+<body>
+<section id="box" class="view-window">
+		<div class="card-area">
+			<div id="card1" class="card">
+				<div class="front">
+					这是正面的一些说明
+				</div>
+				<div class="after">
+					<p>标签：<input></p>
+					<p>标签：<input></p>
+					<p>标签：<input></p>
+					<p><button>按钮</button></p>
+				</div>
+			</div>
+		</div>
+		<div class="card-area">
+			<div id="card2" class="card">
+				<div class="front">
+					这是正面的一些说明
+				</div>
+				<div class="after">
+					<p>标签：<input></p>
+					<p>标签：<input></p>
+					<p>标签：<input></p>
+					<p><button>按钮</button></p>
+				</div>
+			</div>
+		</div>
+</section>
+</body>
+<script type="text/javascript">
+var turnCard = (function() {
+	var cardTurn = false;
+	return function(cc) {
+		console.log(cc);
+		if (cc.data("isAfter")) {
+			cc.removeClass("onafter").width();
+			cc.addClass("onfront");
+			setTimeout(e=>{
+				cc.removeClass("center");
+				cardTurn = false;
+			}, 1200);
+		} else {
+			if (cardTurn) return;
+			cc.removeClass("onfront").addClass("center").width();
+			cc.addClass("onafter");
+			cardTurn = true;
+		}
+		cc.data("isAfter", !cc.data("isAfter"))
+	}
+})();
+$("#box .card").click(e=>{console.log(e.currentTarget); turnCard($(e.currentTarget))});
+</script>
+</html>

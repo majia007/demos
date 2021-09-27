@@ -1,0 +1,20 @@
+@charset "utf-8"; 
+.chat-content {
+	position: relative;
+	margin-bottom: 10px;
+	border: 1px solid #ccc;
+	min-height: 240px;
+	max-height: 240px;
+	overflow: auto;
+}
+.chat-content *, .edit-content * {
+	max-width: 90%;
+}
+.edit-content {
+	display: block;
+	width: 100%;
+	border: 1px solid #ccc;
+	min-height: 120px;
+	max-height: 120px;
+	overflow: auto;
+}

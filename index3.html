@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html  onselectstart="return false">
+<head>
+<meta charset="UTF-8">
+<title>抽奖</title>
+<script src="/js/jquery-1.11.1.min.js"></script>
+<style type="text/css">
+.抽奖 {
+	width: 320px;
+	height: 160px;
+	border: 2px solid #666;
+	position: relative;
+}
+.中奖信息, .抽奖浮层 {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+.中奖信息 {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+</style>
+</head>
+<body>
+	<div style="padding: 80px;">
+		<div class="抽奖">
+			<div class="中奖信息">
+				<span id="中奖信息"></span>
+			</div>
+			<canvas class="抽奖浮层" id="抽奖浮层"></canvas>
+		</div>
+	</div>
+</body>
+<script type="text/javascript">
+	var x0 = 0;
+	var y0 = 0;
+	var onMove = false;
+	window.onload = e => {
+		$("抽奖浮层").width = $("抽奖浮层").offsetWidth;
+		$("抽奖浮层").height = $("抽奖浮层").offsetHeight;
+		绘制浮层();
+		$("中奖信息").innerHTML = "一等奖";
+		$("抽奖浮层").onmousedown = e => {
+			let x = e.layerX || e.offsetX;
+			let y = e.layerY || e.offsetY;
+			x0 = x;
+			y0 = y;
+			绘制浮层(x, y, 15, 0, "rgba(0,0,0,1)", 0);
+			$("抽奖浮层").onmousemove = e => {
+				let x = e.layerX || e.offsetX;
+				let y = e.layerY || e.offsetY;
+				绘制浮层(x, y, 30, 0, "rgba(0,0,0,1)", 2);
+			}
+			return false;
+		}
+		$("抽奖浮层").onmouseup = $("抽奖浮层").onmouseout = e => {
+			$("抽奖浮层").onmousemove = null;
+			onMove = false;
+		}
+	}
+	function 绘制浮层(x=0, y=0, w=320, h=160, color="#ccc", mode = 1) {
+		let 浮层 = $("抽奖浮层").getContext("2d");
+		switch (mode) {
+			case 0:
+				浮层.globalCompositeOperation = "destination-out";
+				浮层.beginPath();
+				浮层.arc(x, y, w, 0, 2*Math.PI);
+				浮层.fillStyle = color;
+				浮层.fill();
+				break;
+			case 1:
+				浮层.beginPath();
+				浮层.fillStyle = color;
+				浮层.fillRect(x, y, w, h);
+				break;
+			case 2:
+				if (!onMove) {
+					浮层.beginPath();
+					浮层.moveTo(x0, y0);
+					浮层.lineCap = "round";
+					浮层.lineJoin = "round";
+					浮层.strokeStyle = color;
+					浮层.lineWidth = w;
+				}
+				浮层.lineTo(x, y);
+				浮层.stroke();
+				x0 = x;
+				y0 = y;
+				break;
+		}
+	}
+	const $ = id => document.getElementById(id);
+</script>
+</html>

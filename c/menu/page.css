@@ -1,0 +1,27 @@
+@charset "utf-8"; 
+.c-右键菜单 {
+	position: absolute;
+	display: block;
+	font-size: 14px;
+	min-width: 120px;
+	animation: 右键菜单 0.3s;
+}
+.c-右键菜单 a {
+	display: block;
+	width: 100%;
+	padding-left: 1em;
+	line-height: 2;
+	color: #fff;
+	background: rgba(0,0,0,0.666);
+}
+.c-右键菜单 a:hover {
+	background: rgba(0,188,166,0.666);
+	color: #333;
+}
+.c-右键菜单 a:active {
+	color: #fff;
+}
+@keyframes 右键菜单 {
+	0% {opacity: 0;}
+	100% {opacity: 1;}
+}

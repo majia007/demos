@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html onselectstart="return false">
+<head>
+<meta charset="UTF-8">
+<title>vue</title>
+<script src="/js/jquery-3.2.1.min.js"></script>
+<script src="https://unpkg.com/vue/dist/vue.js"></script>
+<style type="text/css">
+.banner{position: relative;overflow: hidden;margin: 0 auto;border: 1px solid;width: 640px;height: 320px;}
+.banner>.b-page{position: absolute;width: 100%;height: 100%;left: -100%;background: repeating-linear-gradient(70deg, #113 0px, #113 15px, #35f 16px, #35f 24px, #113 25px); background: #ccc;}
+.b-page.active{left: 0;z-index: 2;transition: all 0.3s;}
+.b-page.hide-left{left: -100%;z-index: 2;transition: all 0.3s;}
+.b-page.hide-right{left: 100%;z-index: 2;transition: all 0.3s;}
+.console{position: absolute;z-index: 10;width: 100%;height: 100%;}
+.c-area{text-align: center;position: absolute;width: 100px;height: 100px;background-color: rgba(0,0,0,0.1);cursor: pointer;}
+.c-area:hover{box-shadow: 0 0 5px rgba(0,0,0,0.5);}
+.c-area:active{box-shadow: none;background-color: rgba(0,0,0,0.15);}
+.c-area:after {
+	content: "";
+	position: absolute;
+	margin: auto;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	display: block;
+	width: 40px;
+	height: 40px;
+	border: 5px solid #fff;
+	border-top-color: transparent;
+	border-left-color: transparent;
+}
+.next:after{transform: rotate(-45deg) translate(-10px,-10px);}
+.pre:after{transform: rotate(135deg) translate(-10px,-10px);}
+.pre{left: 20px;top: calc(50% - 50px);}
+.next{right: 20px;top: calc(50% - 50px);}
+</style>
+</head>
+<body>
+	<article class="banner">
+		<section class="b-page active">1</section>
+		<section class="b-page">2</section>
+		<section class="b-page">3</section>
+		<section class="b-page">4</section>
+		<section class="console">
+			<div class="c-area pre"></div>
+			<div class="c-area next"></div>
+		</section>
+	</article>
+	<div id="app-2">
+		<span v-bind:title="message">Hover your mouse over me for a few
+			seconds to see my dynamically bound title! </span>
+	</div>
+	<div id="app-7">
+		<ol>
+			<todo-item v-for="grocery in groceryList" v-bind:值="grocery"></todo-item>
+		</ol>
+	</div>
+</body>
+<script>
+(banner => {
+	const pages = banner.children(`.b-page`);
+	if (pages.length < 2) return;
+	let scrolling = false;
+	const firstPage = $(pages[0]);
+	const lastPage = $(pages[pages.length - 1]);
+	banner[0].addEventListener("transitionend", e => {scrolling = false});
+	banner.on(`click`, `.c-area`, e=>{
+		if (scrolling) return false;
+		let activePage = pages.filter(`.active`);
+		if ($(e.currentTarget).hasClass(`next`)) {
+			let next = activePage.next(`.b-page`);
+			if (!next[0]) next = firstPage;
+			next.removeClass(`hide-left`).removeClass(`hide-right`).css(`left`, `100%`);
+			banner.width();
+			next.css(`left`, ``).addClass(`active`);
+			activePage.removeClass(`active`).addClass(`hide-left`);
+		} else {
+			let prev = activePage.prev(`.b-page`);
+			if (!prev[0]) prev = lastPage;
+			prev.removeClass(`hide-left`).removeClass(`hide-right`).css(`left`, `-100%`);
+			banner.width();
+			prev.css(`left`, ``).addClass(`active`);
+			activePage.removeClass(`active`).addClass(`hide-right`);
+		}
+		scrolling = true;
+	})
+})($(".banner"));
+	var app2 = new Vue({
+		el : '#app-2',
+		data : {
+			message : 'You loaded this page on ' + new Date()
+		}
+	})
+	Vue.component('todo-item', {
+		props : [ '值' ],
+		template : '<li>{{ 值.text }}</li>'
+	})
+	var app7 = new Vue({
+		el : '#app-7',
+		data : {
+			groceryList : [
+				{
+					text : 'Vegetables'
+				},
+				{
+					text : 'Cheese'
+				},
+				{
+					text : 'Whatever else humans are supposed to eat'
+				}
+			]
+		}
+	})
+</script>
+</html>

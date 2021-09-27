@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<script type="text/javascript" src="/js/jquery-1.7.2.min.js"></script>
+<title>测试 </title>
+<style type="text/css">
+.loading {
+	width: 1rem;
+	height: 1rem;
+	padding: 9.5rem;
+	//animation: roll 2s linear infinite;
+	box-sizing: content-box;
+}
+.gll {
+	width: 1rem;
+	height: 1rem;
+	border-radius: 50%;
+	background: transparent;
+	animation: gll 2s linear infinite;
+}
+@keyframes roll {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
+}
+@keyframes gll {
+	0%,100% {
+		box-shadow: 8rem 0 0 1rem gray, 8rem 0 0 0.8rem gray, 8rem 0 0 0.6rem gray, 8rem 0 0 0.4rem gray;
+	}
+	33% {
+		box-shadow: -8rem 0 0 1rem gray, -6rem 0 0 0.8rem gray, -4rem 0 0 0.6rem gray, -2rem 0 0 0.4rem gray;
+	}
+	50% {
+		box-shadow: -8rem 0 0 1rem gray, -8rem 0 0 0.8rem gray, -8rem 0 0 0.6rem gray, -8rem 0 0 0.4rem gray;
+	}
+	66% {
+		box-shadow: 8rem 0 0 1rem gray, 8rem 0 0 0.8rem gray, 8rem 0 0 0.6rem gray, 8rem 0 0 0.4rem gray;
+	}
+}
+.btn {
+	display: inline-block;
+	box-sizing: border-box;
+	border: 1px solid gray;
+	background-color: white;
+	font-size: 1rem;
+	height: 1.4rem;
+	line-height: 1.4rem;
+	padding: 0 12px;
+	outline: none;
+}
+.hidden {
+	display: none;
+	opacity: 0;
+}
+#show-box p{
+	font-size: 1rem;
+}
+#show-box img {
+	min-width: 1rem;
+	max-width: 50%;
+}
+</style>
+</head>
+<body>
+<img alt="" id="video" src="">
+URL: <input id="url" value="ws://127.0.0.1:8080/chat">
+<button class="btn"  type="button" onclick="openWebsocket();">连接</button>
+<button class="btn"  type="button" onclick="closeWebsocket();">断开</button>
+<button class="btn"  type="button" onclick="cleanChatBox();">清屏</button>
+<button class="btn"  type="button" onclick="ltest();">测试</button>
+<div id="show-box" style="max-height: 80vh;overflow: auto;"></div>
+<p>
+	<input id="in">
+	<button class="btn"  type="button" onclick="send();">发送</button>
+	<input class="btn hidden" type="file" id="pic" onchange="choosePic();">
+	<label class="btn" for="pic">图片</label>
+	<input id="autoScroll" type="checkbox" checked><label for="autoScroll">自动滚动</label>
+</p>
+<script type="text/javascript">
+var webSocket;
+function onMessage(e) {
+	if (test)  {
+		showMsg(maxlength);
+		ltest();
+		return;
+	}
+	if (typeof e.data == "string") {
+		var data = $.parseJSON(e.data);
+		if (("" + data.msg).indexOf("data:image") == 0) {
+			addPic(data);
+			return;
+		}
+		if (data.setName) {
+			if (data.success) {
+				showMsg("<strong>[SYSTEM] Your name is : " + data.name + "</strong>");
+			} else {
+				showMsg("<strong>[SYSTEM] Name error. Input your name, start with \"setName:\"</strong>");
+				$("#in").val("setName:")
+			}
+			return;
+		}
+		if (data.isSelf) {
+			showMsg("[" + data.time + "] " + "You: " + data.msg);
+		} else {
+			showMsg("[" + data.time + "] " + data.user + ": " + data.msg);
+		}
+	} else {
+		console.log(e.data);
+		var reader = new FileReader();
+		reader.readAsDataURL(new Blob([e.data]));
+		reader.onload = function(){
+			var msg = this.result;
+			addPic({msg: msg});
+		}
+	}
+}
+function onOpen(e) {
+	webSocket.binaryType = "arraybuffer";
+	showMsg("<strong>[SYSTEM] Connect suuccess, set your name. Start with \"setName:\"</strong>");
+	cleanInput();
+	$("#in").val("setName:");
+}
+function onError(e) {
+	showMsg("<strong>[SYSTEM] Error.</strong>");
+	$("#url").prop("readOnly", false);
+	cleanInput();
+}
+function onClose(e){
+	console.log(e);
+	console.log(maxlength);
+	test = false;
+	showMsg("<strong>[SYSTEM] Close.</strong>");
+	$("#url").prop("readOnly", false);
+	cleanInput();
+}
+
+function openWebsocket(){
+	if (webSocket != undefined && webSocket.readyState == 1) {
+		showMsg("<strong>[SYSTEM] 已连接</strong>");
+		return;
+	}
+	var url = $("#url").val();
+	try {
+		webSocket = new WebSocket(url);
+	} catch (e) {
+		console.log(e);
+		showMsg("<strong>[SYSTEM] Error url.</strong>");
+		return;
+	}
+	webSocket.onerror = onError;
+	webSocket.onopen = onOpen;
+	webSocket.onmessage = onMessage;
+	webSocket.onclose = onClose;
+	$("#url").prop("readOnly", true);
+}
+function closeWebsocket(){
+	if (webSocket != undefined && webSocket.readyState == 1) {
+		webSocket.close();
+	} else {
+		showMsg("<strong>[SYSTEM] Closed.</strong>");
+	}
+}
+function send(){
+	if (webSocket == undefined || webSocket.readyState != 1) {
+		showMsg("<strong>[SYSTEM] Not online.</strong>");
+		return;
+	}
+	if (waitSendPic) {
+		if (picName == $("#in").val()) {
+			sendPic();
+		} else {
+			cleanInput();
+		}
+	} else {
+		webSocket.send($("#in").val());
+		cleanInput();
+	}
+}
+function showMsg(msg){
+	$("#show-box").append("<p>" + msg + "</p>");
+	if ($("#autoScroll").prop("checked")) {
+		$("#show-box").stop();
+		$("#show-box").animate({scrollTop:$("#show-box")[0].scrollHeight}, 500);
+	}
+}
+function cleanChatBox() {
+	$("#show-box").html("");
+}
+var waitSendPic = false;
+var picName;
+function choosePic() {
+	var pic = $("#pic")[0].files[0];
+	if (pic.type.indexOf("image") != 0){
+		alert("请选择图片！");
+		cleanInput();
+		return false;
+	}
+	var reader = new FileReader();
+	reader.readAsArrayBuffer(pic);
+	reader.onload = function(...e) {
+		console.log(...e);
+		console.log(reader.result);
+		console.log(typeof reader.result);
+	}
+	$("#in").val(pic.name);
+	picName = pic.name;
+	waitSendPic = true;
+}
+function sendPic() {
+	var pic = $("#pic")[0].files[0];
+	var reader = new FileReader();
+
+	reader.readAsArrayBuffer(pic);
+	reader.onload = function(e) {
+		webSocket.send(this.result);
+		cleanInput();
+	}
+/*
+	reader.readAsDataURL(pic)
+	reader.onload = function(e) {
+		webSocket.send(this.result);
+		cleanInput();
+	}
+ */
+}
+function addPic(data) {
+	if (data.isSelf) {
+		showMsg("[" + data.time + "] " + "You: <img src='" + data.msg +"'' />");
+	} else {
+		showMsg("[" + data.time + "] " + data.user + ": <img src='" + data.msg +"'' />");
+	}
+	cleanInput();
+}
+function cleanInput() {
+	$("#pic")[0].value = "";
+	waitSendPic = false;
+	$("#in").val("");
+}
+var maxlength = 0;
+var text = "";
+var test = false;
+var ltest = function() {
+	text += "a";
+	maxlength++;
+	webSocket.send(text);
+}
+</script>
+</html>

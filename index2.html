@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<script src="/js/jquery-1.11.1.min.js"></script>
+<script src="/js/jquery.ajaxfileupload.js"></script>
+<script src="/js/bootstrap-3.3.0.min.js"></script>
+<script type="text/javascript" src="/js/echarts.min.js"></script>
+<link rel="stylesheet" href="/css/bootstrap-3.3.0.min.css">
+<title>测试</title>
+<style type="text/css">
+html {
+	font-size: 100px;
+}
+.置顶标题栏 {
+	position: relative;
+	background-color: #ddd;
+	border: 0.01rem solid #ccc;
+	text-align: center;
+	padding: 0.12rem;
+	font-size: 0.16rem;
+	font-weight: bolder;
+	min-width: 11rem;
+}
+.统计时间 {
+	position: absolute;
+	top: 0.2rem;
+	right: 0.15rem;
+	font-size: 0.12rem;
+	cursor: pointer;
+}
+.顶部折线图区域 {
+	width: 11rem;
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+	margin: 0 auto;
+	padding: 0.2rem 0;
+}
+.顶部折线图 {
+	position: relative;
+	height: 1.5rem;
+	width: 2rem;
+	border: 0.02rem solid #ccc;
+	border-radius: 0.05rem;
+}
+.顶部折线图图像 {
+	position: relative;
+	top: 25%;
+	width: 100%;
+	height: 100%;
+}
+.顶部折线图标题 {
+	position: absolute;
+	top : 0.15rem;
+	left: 0.15rem;
+	font-size: 0.15rem;
+	font-weight: bold;
+}
+.顶部折线图变化率 {
+	position: absolute;
+	top : 0.15rem;
+	left: 0.9rem;
+	font-size: 0.15rem;
+	font-weight: bold;
+}
+.顶部折线图数值 {
+	position: absolute;
+	top : 0.4rem;
+	left: 0.15rem;
+	font-size: 0.28rem;
+}
+.详情区 {
+	border-top: 0.01rem solid #ccc;
+	display: flex;
+	min-width: 11rem;
+}
+.详情区 > aside {
+	flex-grow : 0;
+	width: 2.5rem;
+	padding: 0.2rem;
+}
+.分类方式 {
+	padding: 0rem;
+	font-size: 0.14rem;
+	color: #666666;
+	list-style: none;
+}
+.分类方式 li {
+	position: relative;
+	height: 0.4rem;
+	line-height: 0.4rem;
+	padding-left: 0.3rem;
+	padding-right: 0.12rem;
+	margin-top: 0.1rem;
+	border-radius: 0.02rem;
+	font-size: 0.16rem;
+	font-weight: bold;
+	color: #333333;
+	cursor: pointer;
+	text-overflow: ellipsis;
+	overflow:hidden;
+	white-space:nowrap;
+}
+.分类方式 li:hover, .分类方式 li.active {
+	border: 1px solid #ccc;
+	background-color: #ddd;
+}
+.分类方式 li::before {
+	content: '';
+	display: block;
+	position: absolute;
+	left: 0.04rem;
+	top: 0.09rem;
+	height: 0.2rem;
+	width: 0.2rem;
+	border-radius: 50%;
+	border: 0.01rem solid #ccc;
+}
+.分类方式 li:nth-child(3n+1)::before {
+	background-color: #ABC9DD;
+}
+.分类方式 li:nth-child(3n+2)::before {
+	background-color: #AEDDCF;
+}
+.分类方式 li:nth-child(3n)::before {
+	background-color: #EEECC1;
+}
+.分类方式 li::after {
+	content: '>';
+	display: block;
+	position: absolute;
+	right: 0.04rem;
+	top: 0rem;
+}
+.详情区 > article {
+	flex-grow : 1;
+	display: flex;
+	flex-wrap: wrap;
+	align-content: flex-start;
+	justify-content:  flex-start;
+}
+.筛选工具栏 {
+	width: 100%;
+	padding: 0.2rem;
+	padding-bottom: 0rem;
+}
+.筛选工具栏 select {
+	float: right;
+	margin-left: 0.2rem;
+}
+.综合仪表详图, .客户分表详图 {
+	height: 3rem;
+	width: 4.5rem;
+	margin: 0.2rem auto;
+	border: 1px  solid #ccc;
+	border-radius: 0.05rem;
+}
+.综合仪表详图 canvas, .客户分表详图 canvas {
+	transform : translateY(0.2rem);
+}
+#客户新闻 {
+	width: 100%;
+	margin: 0.2rem;
+	margin-bottom: 0rem;
+}
+#新闻内容 {
+	border: 1px  solid #ccc;
+	border-radius: 0.05rem;
+	height: 1.5rem;
+	display: flex;
+	justify-content: space-around;
+}
+.新闻 {
+	width: 2rem;
+	flex-grow: 1;
+	margin: 0 0.2rem;
+	cursor: pointer;
+}
+.新闻 em {
+	font-style:normal;
+	color: #c60a00;
+}
+.新闻-时间 {
+	float: left;
+	width: 0.6rem;
+	height: 0.6rem;
+	border: 1px solid #ccc;
+	border-radius: 50%;
+	background-color: #d7e;
+	margin: 0.45rem 0;
+	line-height: 0.6rem;
+	text-align: center;
+}
+.新闻-时间::after {
+	clear: both;
+}
+.新闻-日期 {
+	font-size: 0.28rem;
+}
+.新闻-标题 {
+	margin-top: 0.38rem;
+	padding-left: 0.1rem;
+	width: calc(100% - 0.6rem);
+	height: 0.24rem;
+	line-height: 0.24rem;
+	font-size: 0.16rem;
+	font-weight: bold;
+	text-overflow: ellipsis;
+	overflow:hidden;
+	white-space:nowrap;
+}
+.新闻-简介 {
+	padding-left: 0.1rem;
+	font-size: 0.14rem;
+	line-height: 0.2rem;
+	height: 0.4rem;
+	width: calc(100% - 0.6rem);
+	overflow:hidden;
+}
+#综合仪表加载提示, #客户分表加载提示 {
+	margin: 1rem auto;
+	position: relative;
+	width: 4.6rem;
+}
+#综合仪表加载提示 div, #客户分表加载提示 div {
+	animation-fill-mode: both;
+	position: absolute;
+	left: 0rem;
+	top: 0rem;
+	border: 0.3rem solid #0cf;
+	border-bottom-color: transparent;
+	border-top-color: transparent;
+	border-radius: 100%;
+	height: 4.6rem;
+	width: 4.6rem;
+	animation: rotate 1.25s 0s ease-in-out infinite;
+}
+#综合仪表加载提示 div:last-child, #客户分表加载提示 div:last-child {
+	display: inline-block;
+	top: 1.3rem;
+	left: 1.3rem;
+	width: 2rem;
+	height: 2rem;
+	border-color: #0cf transparent #0cf transparent;
+	animation-direction: reverse;
+	animation-duration: 1.25s;
+}
+@keyframes rotate {
+	0% {transform: rotate(0deg) scale(1);}
+	50% {transform: rotate(180deg) scale(0.6);}
+	100% {transform: rotate(360deg) scale(1);}
+}
+</style>
+</head>
+<body>
+	<input type="file" style="display: none;" id="dataFile" name="dataFile">
+	<header class="置顶标题栏" ><span onclick="上传文件();" style="cursor: pointer;" title="点击上传文件">晓致数据中心</span><span class="统计时间">数据最后更新：<span id="数据统计时间" title="点击刷新数据"></span></span></header>
+	<article class="顶部折线图区域">
+		<div id="固定绑定数" class="顶部折线图">
+			<div class="顶部折线图图像"></div><div class="顶部折线图标题">固定绑定</div><div class="顶部折线图变化率"></div><div class="顶部折线图数值"></div>
+		</div>
+		<div id="动态绑定数" class="顶部折线图">
+			<div class="顶部折线图图像"></div><div class="顶部折线图标题">动态绑定</div><div class="顶部折线图变化率"></div><div class="顶部折线图数值"></div>
+		</div>
+		<div id="拨打数" class="顶部折线图">
+			<div class="顶部折线图图像"></div><div class="顶部折线图标题">拨打数</div><div class="顶部折线图变化率"></div><div class="顶部折线图数值"></div>
+		</div>
+		<div id="接通率" class="顶部折线图">
+			<div class="顶部折线图图像"></div><div class="顶部折线图标题">接通率</div><div class="顶部折线图变化率"></div><div class="顶部折线图数值"></div>
+		</div>
+		<div id="来电接听总时长" class="顶部折线图">
+			<div class="顶部折线图图像"></div><div class="顶部折线图标题">接听时长</div><div class="顶部折线图变化率"></div><div class="顶部折线图数值"></div>
+		</div>
+	</article>
+	<article class="详情区">
+		<aside>
+			<ul class="分类方式">
+				按项目
+				<li class="active">综合仪表</li>
+			</ul>
+			<ul class="分类方式" id="客户列表">
+				按客户
+				<li>加载中...</li>
+			</ul>
+		</aside>
+		<article id="综合仪表">
+			<div class="筛选工具栏">
+				<span>数据展示</span>
+				<select onchange="绘制综合仪表();" id="日期-综合仪表">
+					<option value="最近七天">最近七天</option>
+					<option value="最近30天">最近30天</option>
+					<option value="上个月">上个月</option>
+					<option value="这个月">这个月</option>
+				</select>
+				<select onchange="绘制综合仪表();" id="组名-综合仪表">
+				</select>
+			</div>
+			<div id="综合仪表加载提示">
+				<div></div>
+				<div></div>
+			</div>
+		</article>
+		<article id="客户分表" style="display: none;">
+			<div id="客户新闻" style="display: none;">
+				<p>咨询关注</p>
+				<div id="新闻内容">
+					<div class="新闻">
+						<div class="新闻-时间" style="background-color: #ABC9DD;"><span class="新闻-日期">24</span><span class="新闻-月份">/11</span></div>
+						<p class="新闻-标题">这是标题这是标题这是标题这是标题这是标题这是标题这是标题</p>
+						<p class="新闻-简介">这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介</p>
+					</div>
+					<div class="新闻">
+						<div class="新闻-时间" style="background-color: #AEDDCF;"><span class="新闻-日期">24</span><span class="新闻-月份">/11</span></div>
+						<p class="新闻-标题">这是标题这是标题这是标题这是标题这是标题这是标题这是标题</p>
+						<p class="新闻-简介">这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介</p>
+					</div>
+					<div class="新闻">
+						<div class="新闻-时间" style="background-color: #EEECC1;"><span class="新闻-日期">24</span><span class="新闻-月份">/11</span></div>
+						<p class="新闻-标题">这是标题这是标题这是标题这是标题这是标题这是标题这是标题</p>
+						<p class="新闻-简介">这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介这是简介</p>
+					</div>
+				</div>
+			</div>
+			<div class="筛选工具栏">
+				<span>数据展示</span>
+				<select onchange="绘制客户分表();" id="日期-客户分表">
+					<option value="最近七天">最近七天</option>
+					<option value="最近30天">最近30天</option>
+					<option value="上个月">上个月</option>
+					<option value="这个月">这个月</option>
+				</select>
+			</div>
+			<div id="客户分表加载提示">
+				<div></div>
+				<div></div>
+			</div>
+		</article>
+	</article>
+</body>
+<script type="text/javascript">
+	function 上传文件() {
+		$("#dataFile").trigger("click");
+	}
+
+	var 项目列表 = ["号码使用量","固定绑定数","动态绑定数","拨打数","拨通数","未接听数","接通率","未接听小于10秒数","未接听小于10秒占比","接听小于10秒数","接听小于10秒占比","接听大于89秒数","接听大于89秒占比","黑名单请求数","未绑定呼叫数","上行短信数","下行短信数","来电接听总时长"];
+	var 项目组 = ["号码量","绑定数","接通率","拨打量","时长分布比例","黑名单请求数","未绑定呼叫数","话务量"];
+	var 百分比显示 = ["接通率","未接听小于10秒占比","接听小于10秒占比","接听大于89秒占比","时长分布比例"];
+
+	class 项目分组  {
+		constructor() {
+			this.号码量 = [];
+			this.绑定数 = [];
+			this.未处理拨打量 = {};
+			this.拨打量 = [];
+			this.接通率 = [];
+			this.时长分布比例 = [];
+			this.黑名单请求数 = [];
+			this.未绑定呼叫数 = [];
+			this.话务量 = [];
+		};
+		添加项目(项目名, 数据) {
+			if (项目名 == "号码使用量") {
+				this.号码量.push({
+					name : 项目名,
+					type : "line",
+					showSymbol : false,
+					stack : "号码量",
+					data: 数据
+				});
+			} else if (项目名 == "固定绑定数" || 项目名 == "动态绑定数") {
+				this.绑定数.push({
+					name : 项目名,
+					type : "line",
+					showSymbol : false,
+					stack : "绑定数",
+					data: 数据
+				});
+			} else if (项目名 == "拨打数" || 项目名 == "拨通数" || 项目名 == "未接听数") {
+				this.未处理拨打量[项目名] = {
+					name : 项目名,
+					type : "bar",
+					stack : "拨打量",
+					data: 数据
+				};
+			} else if (项目名 == "接通率") {
+				this.接通率.push({
+					name : 项目名,
+					type : "line",
+					showSymbol : false,
+					stack : "接通率",
+					data: 数据
+				});
+			} else if (项目名 == "未接听小于10秒占比" || 项目名 == "接听小于10秒占比" || 项目名 == "接听大于89秒占比") {
+				this.时长分布比例.push({
+					name : 项目名,
+					type : "line",
+					showSymbol : false,
+					stack : "时长分布比例",
+					data: 数据
+				});
+			} else if (项目名 == "黑名单请求数") {
+				this.黑名单请求数.push({
+					name : 项目名,
+					type : "bar",
+					stack : "黑名单请求数",
+					data: 数据
+				});
+			} else if (项目名 == "未绑定呼叫数") {
+				this.未绑定呼叫数.push({
+					name : 项目名,
+					type : "line",
+					showSymbol : false,
+					stack : "未绑定呼叫数",
+					data: 数据
+				});
+			} else if (项目名 == "来电接听总时长") {
+				this.话务量.push({
+					name : 项目名,
+					type : "bar",
+					stack : "话务量",
+					data: 数据
+				});
+			};
+		};
+		获取数据(组名) {
+			if (组名 == "拨打量") {
+				var _拨打数数据 = this.未处理拨打量.拨打数.data;
+				var _拨通数数据 = this.未处理拨打量.拨通数.data;
+				var _未接听数数据 = this.未处理拨打量.未接听数.data;
+				var _其他数据 = [];
+				for (var i = 0; i < _拨打数数据.length; i++) {
+					_其他数据.push(_拨打数数据[i] - _拨通数数据[i] - _未接听数数据[i]);
+				}
+				this.拨打量.push(this.未处理拨打量.拨通数);
+				this.拨打量.push(this.未处理拨打量.未接听数);
+				this.拨打量.push({
+					name : "其他",
+					type : "bar",
+					stack : "拨打量",
+					data: _其他数据
+				});
+			}
+			return this[组名];
+		};
+	}
+
+	var 日期列表;
+	var 客户列表;
+	var 统计数据;
+	
+	$(function(){
+		$("#dataFile").ajaxfileupload({
+			action: '/uploadData.do',
+			valid_extensions : ['csv'],
+			onComplete: function(e) {
+				console.log(e);
+				if (e.status != undefined && !e.status) {
+					this.val("");
+				} else {
+					$(".综合仪表详图").remove();
+					$(".客户分表详图").remove();
+					$("#综合仪表").hide();
+					$("#客户分表").show();
+					$("#客户分表加载提示").show();
+					window.location.reload();
+				}
+			}
+		});
+		$.ajax({
+			type: "post",
+			dataType: "json",
+			url: "/getData.do",
+			async: false,
+			contentType: 'application/x-www-form-urlencoded; charset=utf-8', 
+			success: data => {
+				console.log(data);
+				客户列表 = data.客户列表;
+				//if (客户列表.indexOf("总业务统计") > -1) 客户列表.splice(客户列表.indexOf("总业务统计"), 客户列表.indexOf("总业务统计")+1);
+				日期列表 = data.日期列表;
+				统计数据 = data;
+			}
+		});
+
+		for (var i = 0; i < 项目组.length; i++) {
+			$("#组名-综合仪表").append(`<option value="` + 项目组[i] + `">` + 项目组[i] + `</option>`);
+		}
+		$("#客户列表").html("按客户");
+		for (var i = 0; i < 客户列表.length; i++) {
+			if(客户列表[i] == "总业务统计") continue;
+			$("#客户列表").append(`<li title="` + 客户列表[i] + `">` + 客户列表[i] + `</li>`);
+		}
+		$(".分类方式 li").click(e => {
+			$(".分类方式 li").removeClass("active");
+			$(this).addClass("active");
+			if($(this).html() == "综合仪表") {
+				绘制综合仪表();
+			} else {
+				绘制客户分表($(this).html());
+			}
+		});
+		$("#数据统计时间").html(日期列表[日期列表.length - 1]);
+		$("#数据统计时间").click(() => $.get("/updateData.do", r => {
+			window.location.reload();
+			$(".综合仪表详图").remove();
+			$(".客户分表详图").remove();
+			$("#综合仪表").hide();
+			$("#客户分表").show();
+			$("#客户分表加载提示").show();
+		}));
+
+		var 固定绑定数 = echarts.init($("#固定绑定数").find(".顶部折线图图像")[0]);
+		var 动态绑定数 = echarts.init($("#动态绑定数").find(".顶部折线图图像")[0]);
+		var 拨打数 = echarts.init($("#拨打数").find(".顶部折线图图像")[0]);
+		var 接通率 = echarts.init($("#接通率").find(".顶部折线图图像")[0]);
+		var 来电接听总时长 = echarts.init($("#来电接听总时长").find(".顶部折线图图像")[0]);
+
+		var 顶部折线图 = {
+			title : {
+				show : false
+			},
+			tooltip : {
+				trigger : 'axis',
+				formatter : (params, ticket, callback ) => {
+					var param = params[0];
+					return param.seriesName + ` : ` + (百分比显示.indexOf(param.seriesName) > -1?格式化为百分数(param.value, true):param.value);
+				},
+				axisPointer : {
+					type : 'line',
+					lineStyle : {
+						opacity : 0
+					}
+				}
+			},
+			xAxis : {
+				type : 'category',
+				boundaryGap : false,
+				show : false
+			},
+			yAxis : {
+				show : false,
+				min : 'dataMin',
+				max : 'dataMax'
+			},
+			series : [ {
+				name : '',
+				type : 'line',
+				smooth : true,
+				showSymbol : false,
+				data : []
+			} ],
+			setTitle: name => {顶部折线图.title.text = name; 顶部折线图.series[0].name = name; return 顶部折线图;},
+			setColor: color => {顶部折线图.color = [color]; return 顶部折线图;},
+			setData: data => {顶部折线图.series[0].data = data; return 顶部折线图;}
+		};
+
+		var 固定绑定数数据 = 获取数据("总业务统计", "固定绑定数");
+		var 动态绑定数数据 = 获取数据("总业务统计", "动态绑定数");
+		var 拨打数数据 = 获取数据("总业务统计", "拨打数");
+		var 接通率数据 = 获取数据("总业务统计", "接通率");
+		var 来电接听总时长数据 = 获取数据("总业务统计", "来电接听总时长");
+		
+		固定绑定数.setOption(顶部折线图.setTitle("固定绑定数").setData(固定绑定数数据).setColor("#6A2D51"));
+		动态绑定数.setOption(顶部折线图.setTitle("动态绑定数").setData(动态绑定数数据).setColor("#F85E82"));
+		拨打数.setOption(顶部折线图.setTitle("拨打数").setData(拨打数数据).setColor("#DA7447"));
+		接通率.setOption(顶部折线图.setTitle("接通率").setData(接通率数据).setColor("#826653"));
+		来电接听总时长.setOption(顶部折线图.setTitle("来电接听总时长").setData(来电接听总时长数据).setColor("#255165"));
+		$("#固定绑定数").find(".顶部折线图变化率").html(格式化为百分数(固定绑定数数据[固定绑定数数据.length-1]/固定绑定数数据[固定绑定数数据.length-2] - 1));
+		$("#固定绑定数").find(".顶部折线图数值").html(固定绑定数数据[固定绑定数数据.length-1]);
+		$("#动态绑定数").find(".顶部折线图变化率").html(格式化为百分数(动态绑定数数据[动态绑定数数据.length-1]/动态绑定数数据[动态绑定数数据.length-2] - 1));
+		$("#动态绑定数").find(".顶部折线图数值").html(动态绑定数数据[动态绑定数数据.length-1]);
+		$("#拨打数").find(".顶部折线图变化率").html(格式化为百分数(拨打数数据[拨打数数据.length-1]/拨打数数据[拨打数数据.length-2] - 1));
+		$("#拨打数").find(".顶部折线图数值").html(拨打数数据[拨打数数据.length-1]);
+		$("#接通率").find(".顶部折线图变化率").html(格式化为百分数(接通率数据[接通率数据.length-1]/接通率数据[接通率数据.length-2] - 1));
+		$("#接通率").find(".顶部折线图数值").html(格式化为百分数(接通率数据[接通率数据.length-1], true));
+		$("#来电接听总时长").find(".顶部折线图变化率").html(格式化为百分数(来电接听总时长数据[来电接听总时长数据.length-1]/来电接听总时长数据[来电接听总时长数据.length-2] - 1));
+		$("#来电接听总时长").find(".顶部折线图数值").html(来电接听总时长数据[来电接听总时长数据.length-1]);
+
+		绘制综合仪表();
+	});
+
+	function 格式化为百分数(n, noArrow) {
+		n = Math.floor(n*10000)/100;
+		if (noArrow) {
+			return n + `%`;
+		} else {
+			if (n > 0) {
+				return `<span style="color:#117b66">↑ ` + n + `%</span>`;
+			} else {
+				return `<span style="color:#cc1a23">↓ ` + Math.abs(n) + `%</span>`;
+			};
+		}
+	}
+
+	function 获取数据(客户名, 项目名) {
+		var result = [];
+		for (var i = 0; i < 日期列表.length; i++) {
+			var 客户 = 统计数据[日期列表[i]][客户名];
+			if (客户 == undefined) {
+				result.push(0);
+				continue;
+			}
+			var 值 = 客户[项目名];
+			if (值.indexOf("%") > -1) 值 = 值.replace(/%/g, "")/100;
+			result.push(值);
+		}
+		//console.log(客户名 + "-" + 项目名 + "-" + result);
+		return result;
+	}
+
+/* 	function 绘制综合仪表() {
+		$("#客户分表").hide();
+		$("#综合仪表").show();
+		$("#综合仪表加载提示").remove();
+		$(".综合仪表详图").remove();
+		$(".客户分表详图").remove();
+		var 组名= $("#组名-综合仪表").val();
+		var 日期 = $("#日期-综合仪表").val();
+		var time;
+		var 百分比绘图 = false;
+		if (百分比显示.indexOf(项目名) > -1) 百分比绘图 = true;
+		for (var i = 0; i < 客户列表.length; i++) {
+			if (客户列表[i] == "总业务统计") continue;
+			$("#综合仪表").append(`<div id="` + 客户列表[i] + `" class="综合仪表详图" ></div>`);
+			var data = 获取数据(客户列表[i], 项目名);
+			switch (日期) {
+			case "最近七天":
+				data = data.slice(-7);
+				time = 日期列表.slice(-7);
+				break;
+			case "最近30天":
+				data = data.slice(-30);
+				time = 日期列表.slice(-30);
+				break;
+			case "上个月":
+				var now = new Date();
+				var year = now.getFullYear();
+				var month = now.getMonth();
+				var 上个月 = new Date(year, month, 0);
+				month = 上个月.getMonth() + 1;
+				var firstDay = 上个月.getFullYear() + (month<10?"-0":"-") + month + "-01";
+				var lastDay = 上个月.getFullYear() + (month<10?"-0":"-") + month + "-" + 上个月.getDate();
+				var 首日 = 日期列表.indexOf(firstDay);
+				var 末日 = 日期列表.indexOf(lastDay);
+				首日 = 首日<0?0:首日;
+				末日 = 末日 + 1;
+				data = data.slice(首日, 末日);
+				time = 日期列表.slice(首日, 末日);
+				break;
+			case "这个月":
+				var now = new Date();
+				var 首日 = 日期列表.indexOf(now.getFullYear() + (month<10?"-0":"-") + (now.getMonth()+1) + "-01");
+				首日 = 首日<0?0:首日;
+				data = data.slice(首日);
+				time = 日期列表.slice(首日);
+				break;
+			default:
+				break;
+			};
+			
+			echarts.init($("#" + 客户列表[i])[0]).setOption({
+				title : {
+					left : 'center',
+					textAligen : 'center',
+					text : 客户列表[i]
+				},
+				tooltip : {
+					trigger : 'axis',
+					axisPointer : {
+						type : 'line',
+						lineStyle : {
+							opacity : 0.5
+						}
+					},
+					formatter : function(params, ticket, callback ) {
+						var result =  "";
+						for (var i = 0; i < params.length; i++) {
+							var param = params[i];
+							if (result.length > 0) result += `<br>`;
+							result += param.name  + ` : ` + (百分比显示.indexOf(param.seriesName) > -1?格式化为百分数(param.value, true):param.value);
+						}
+						return result;
+					}
+				},
+				xAxis : {
+					type : 'category',
+					boundaryGap : true,
+					data: time
+				},
+				yAxis : {
+					axisLabel : {
+						rotate : -45,
+						formatter : function(value, index) {
+							if (百分比绘图) return 格式化为百分数(value, true);
+							if (value%1 != 0) return null;
+							return value;
+						}
+					}
+				},
+				series : [ {
+					name : 项目名,
+					type : 'line',
+					smooth : false,
+					showSymbol : false,
+					data : data
+				} ]
+			});
+		}
+	} */
+
+	function 绘制综合仪表() {
+		$("#客户分表").hide();
+		$("#综合仪表").show();
+		$("#综合仪表加载提示").hide();
+		$(".综合仪表详图").remove();
+		$(".客户分表详图").remove();
+		var 组名 = $("#组名-综合仪表").val();
+		var 日期 = $("#日期-综合仪表").val();
+		var time;
+		for (var i = 0; i < 客户列表.length; i++) {
+			var 客户名 = 客户列表[i];
+			var 分组 = new 项目分组();
+			for (var j = 0; j < 项目列表.length; j++) {
+				var data = 获取数据(客户名, 项目列表[j]);
+				switch (日期) {
+				case "最近七天":
+					data = data.slice(-7);
+					time = 日期列表.slice(-7);
+					break;
+				case "最近30天":
+					data = data.slice(-30);
+					time = 日期列表.slice(-30);
+					break;
+				case "上个月":
+					var now = new Date();
+					var year = now.getFullYear();
+					var month = now.getMonth();
+					var 上个月 = new Date(year, month, 0);
+					month = 上个月.getMonth() + 1;
+					var firstDay = 上个月.getFullYear() + (month<10?"-0":"-") + month + "-01";
+					var lastDay = 上个月.getFullYear() + (month<10?"-0":"-") + month + "-" + 上个月.getDate();
+					var 首日 = 日期列表.indexOf(firstDay);
+					var 末日 = 日期列表.indexOf(lastDay);
+					首日 = 首日<0?0:首日;
+					末日 = 末日 + 1;
+					data = data.slice(首日, 末日);
+					time = 日期列表.slice(首日, 末日);
+					break;
+				case "这个月":
+					var now = new Date();
+					var 首日 = 日期列表.indexOf(now.getFullYear() + (month<10?"-0":"-") + (now.getMonth()+1) + "-01");
+					首日 = 首日<0?0:首日;
+					data = data.slice(首日);
+					time = 日期列表.slice(首日);
+					break;
+				default:
+					break;
+				};
+				分组.添加项目(项目列表[j], data) 
+			}
+			$("#综合仪表").append(`<div id="综合仪表-` + 客户名 + `" class="综合仪表详图" ></div>`);
+			var 百分比绘图 = false;
+			if (百分比显示.indexOf(组名) > -1) 百分比绘图 = true;
+			echarts.init($("#综合仪表-" + 客户名)[0]).setOption({
+				title : {
+					text : 客户名,
+					left : 'center',
+					textAligen : ''
+				},
+				tooltip : {
+					trigger : 'axis',
+					axisPointer : {
+						type : 'shadow',
+						lineStyle : {
+							opacity : 0.5
+						}
+					},
+					formatter : (params, ticket, callback ) => {
+						var result =  params[0].name;
+						for (var i = 0; i < params.length; i++) {
+							var param = params[i];
+							result += `<br><span style="display:inline-block;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:` + param.color +`"></span>`
+								+ param.seriesName + ` : ` + (百分比显示.indexOf(param.seriesName) > -1?格式化为百分数(param.value, true):param.value);
+						}
+						return result;
+					}
+				},
+				legend : {
+					data : 项目列表.slice(0).concat(["其他"]),
+					top : 32
+				},
+				xAxis : {
+					type : 'category',
+					boundaryGap : true,
+					data: time
+				},
+				yAxis : {
+					axisLabel : {
+						rotate : -45,
+						formatter : (value, index) => {
+							if (百分比绘图) return 格式化为百分数(value, true);
+							if (value%1 != 0) return null;
+							return value;
+						}
+					}
+				},
+				series : 分组.获取数据(组名)
+			});
+		}
+	}
+
+	function 绘制客户分表(客户名) {
+		if (客户名 == undefined) 客户名 = $("li[class~=active]").html();
+		$("#综合仪表").hide();
+		$("#客户分表").show();
+		$("#客户分表加载提示").hide();
+		$(".综合仪表详图").remove();
+		$(".客户分表详图").remove();
+		获取新闻(客户名);
+		var 日期 = $("#日期-客户分表").val();
+		var time;
+		var 分组 = new 项目分组();
+		for (var i = 0; i < 项目列表.length; i++) {
+			var data = 获取数据(客户名, 项目列表[i]);
+			switch (日期) {
+			case "最近七天":
+				data = data.slice(-7);
+				time = 日期列表.slice(-7);
+				break;
+			case "最近30天":
+				data = data.slice(-30);
+				time = 日期列表.slice(-30);
+				break;
+			case "上个月":
+				var now = new Date();
+				var year = now.getFullYear();
+				var month = now.getMonth();
+				var 上个月 = new Date(year, month, 0);
+				month = 上个月.getMonth() + 1;
+				var firstDay = 上个月.getFullYear() + (month<10?"-0":"-") + month + "-01";
+				var lastDay = 上个月.getFullYear() + (month<10?"-0":"-") + month + "-" + 上个月.getDate();
+				var 首日 = 日期列表.indexOf(firstDay);
+				var 末日 = 日期列表.indexOf(lastDay);
+				首日 = 首日<0?0:首日;
+				末日 = 末日 + 1;
+				data = data.slice(首日, 末日);
+				time = 日期列表.slice(首日, 末日);
+				break;
+			case "这个月":
+				var now = new Date();
+				var 首日 = 日期列表.indexOf(now.getFullYear() + (month<10?"-0":"-") + (now.getMonth()+1) + "-01");
+				首日 = 首日<0?0:首日;
+				data = data.slice(首日);
+				time = 日期列表.slice(首日);
+				break;
+			default:
+				break;
+			};
+			分组.添加项目(项目列表[i], data) 
+		}
+		for (var i = 0; i < 项目组.length; i++) {
+			$("#客户分表").append(`<div id="` + 客户名 + `-` + 项目组[i] + `" class="客户分表详图" ></div>`);
+			var 百分比绘图 = false;
+			if (百分比显示.indexOf(项目组[i]) > -1) 百分比绘图 = true;
+			echarts.init($("#" + 客户名 + "-" + 项目组[i])[0]).setOption({
+				title : {
+					text : 项目组[i],
+					left : 'center',
+					textAligen : ''
+				},
+				tooltip : {
+					trigger : 'axis',
+					axisPointer : {
+						type : 'shadow',
+						lineStyle : {
+							opacity : 0.5
+						}
+					},
+					formatter : (params, ticket, callback ) => {
+						var result =  params[0].name;
+						for (var i = 0; i < params.length; i++) {
+							var param = params[i];
+							result += `<br><span style="display:inline-block;margin-right:5px;border-radius:10px;width:9px;height:9px;background-color:` + param.color +`"></span>`
+								+ param.seriesName + ` : ` + (百分比显示.indexOf(param.seriesName) > -1?格式化为百分数(param.value, true):param.value);
+						}
+						return result;
+					}
+				},
+				legend : {
+					data : 项目列表.slice(0).concat(["其他"]),
+					top : 32
+				},
+				xAxis : {
+					type : 'category',
+					boundaryGap : true,
+					data: time
+				},
+				yAxis : {
+					axisLabel : {
+						rotate : -45,
+						formatter : (value, index) => {
+							if (百分比绘图) return 格式化为百分数(value, true);
+							if (value%1 != 0) return null;
+							return value;
+						}
+					}
+				},
+				series : 分组.获取数据(项目组[i])
+			});
+		}
+	}
+
+	var 前一次浏览的客户 = "";
+	function 获取新闻(客户名) {
+		var index = 客户名.indexOf("正式");
+		if(index > -1) 客户名 = 客户名.substring(0, index);
+		index = 客户名.indexOf("关系");
+		if(index > -1) 客户名 = 客户名.substring(0, index);
+		index = 客户名.indexOf("-");
+		if(index > -1) 客户名 = 客户名.substring(0, index);
+		if (客户名 == "iwjw") 客户名="爱屋吉屋";
+		if (客户名 == "58黄页") 客户名="58同城";
+
+		if (客户名 == 前一次浏览的客户) {
+			$("#客户新闻").show();
+			return;
+		} else {
+			$("#客户新闻").hide();
+		}
+
+		$.ajax({
+			type: "post",
+			dataType: "json",
+			url: "/getNews.do",
+			async: true,
+			data: {keyWords: 客户名},
+			contentType: 'application/x-www-form-urlencoded; charset=utf-8', 
+			success: result => {
+				if (result.success) {
+					$(".新闻").unbind();
+					$(".新闻").hide();
+					前一次浏览的客户 = 客户名;
+					填充新闻(result.data);
+				} else {
+					前一次浏览的客户 = 客户名;
+				}
+			}
+		});
+	}
+
+	function 填充新闻(data) {
+		var 新闻块 = $(".新闻");
+		var j = 0;
+		for (var i = 0; i < data.length; i++) {
+			var 填充数据 = data[i];
+			if (填充数据.标题 == undefined) continue;
+			var 新闻 = $(新闻块[j]);
+			j += 1;
+			var href = 填充数据.链接;
+			新闻.click(()=>window.open(href, "_blank"));
+			新闻.find(".新闻-标题").attr("title", 填充数据.标题);
+			新闻.find(".新闻-标题").html(填充数据.标题);
+			新闻.find(".新闻-简介").attr("title", 填充数据.简介);
+			新闻.find(".新闻-简介").html(填充数据.简介);
+			填充时间(新闻, 填充数据.时间);
+			新闻.show();
+		}
+		if (j ==0) {
+			$("#客户新闻").hide();
+		} else {
+			$("#客户新闻").show();
+		}
+	}
+
+	function 填充时间(新闻, str) {
+		if (str.indexOf('小时') > -1) {
+			str = str.match(/\d+(?=小时)/)[0];
+			var now = new Date();
+			var time = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours() - str)
+			新闻.find(".新闻-月份").html("/" + (time.getMonth() +1));
+			新闻.find(".新闻-日期").html("" + time.getDate());
+		} else if (str.indexOf('分钟') > -1) {
+			str = str.match(/\d+(?=分钟)/)[0];
+			var now = new Date();
+			var time = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes() - str);
+			新闻.find(".新闻-月份").html("/" + (time.getMonth() +1));
+			新闻.find(".新闻-日期").html("" + time.getDate());
+		} else if (str.indexOf('秒') > -1) {
+			str = str.match(/\d+(?=秒)/)[0];
+			var now = new Date();
+			var time = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes(), now.getSeconds() - str);
+			新闻.find(".新闻-月份").html("/" + (time.getMonth() +1));
+			新闻.find(".新闻-日期").html("" + time.getDate());
+		} else {
+			str = str.match(/\d+月\d+日/)[0];
+			新闻.find(".新闻-月份").html("/" + str.match(/\d+(?=月)/));
+			新闻.find(".新闻-日期").html(str.match(/\d+(?=日)/));
+		}
+	}
+</script>
+</html>

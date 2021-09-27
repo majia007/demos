@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<script type="text/javascript" src="/js/jquery-3.2.1.js"></script>
+<script type="text/javascript" src="/js/ctools.js"></script>
+<script type="text/javascript" src="page.js"></script>
+<link rel="stylesheet" href="/css/chen.css" />
+<link rel="stylesheet" href="page.css" />
+<title>测试</title>
+</head>
+<body>
+	<div style="height: 800px; overflow: auto;">
+		<div id="test" style="width: 500px; height: 5000px; margin: 100px auto; background: linear-gradient(0deg, #fff, #ccc 50%, #fff)"></div>
+	</div>
+</body>
+<script>
+	var aaa = 右键菜单.init($("#test"), [ {
+		text : "test1",
+		func : e => clog(1)
+	}, {
+		text : "test2",
+		func : e => clog(2)
+	}, {
+		text : "test3",
+		func : e => clog(3)
+	}, {
+		text : "test4",
+		func : e => clog(4)
+	}, {
+		text : "test5",
+		func : e => clog(5)
+	} ])
+</script>
+</html>

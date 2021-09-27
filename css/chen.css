@@ -1,0 +1,269 @@
+@charset "utf-8"; 
+* {font-family: '微软雅黑 Regular', '微软雅黑', sans-serif; box-sizing: border-box;}
+:focus {outline: none;}
+body {position: relative; margin: 0; padding: 0; min-width: 1000px; overflow: auto;}
+/* 防止内部元素的 margin-top 溢出 */
+body:before {content: ""; display: block; margin-top: -1px; width: 100%; height: 1px;}
+select:focus, input:focus {outline: none;}
+input {padding: 0px;}
+label {display: inline-block; margin-bottom: 0;}
+a,a:hover {color: inherit;text-decoration: none;}
+::-webkit-scrollbar {width: 0; height: 0;}
+.c-red {color: #d81e06;}
+.c-green {color: #060;}
+.c-blue {color: #319cff;}
+.c-orange {color: #f90;}
+.c-button-box {display: flex; justify-content: flex-start; line-height: 30px; margin: 0; margin-bottom: 10px;}
+.rtl {justify-content: flex-end;}
+.button, .input {display: inline-block; transition: all 0.25s;}
+.input {padding-left: 1em; height: 32px; line-height: inherit; width: 220px; border: none; background-color: #f2f2f2; color: #666;}
+.input:focus {box-shadow: 0 0 5px #319cff;}
+.button {position: relative; z-index: 1; cursor:pointer; padding: 0; width: 104px; line-height: inherit; text-align: center; border: 1px solid;}
+.button + .button {margin-left: 20px;}
+.button.simple, .button.simple:hover {width: auto; text-decoration: underline; border:none; color: #319cff;}
+.button.simple-h {width: auto; text-decoration: none; border:none;}
+.button.simple-h:hover {color: #319cff;}
+.button.default {border-color: #319cff; background-color: #319cff ; color: #fff;}
+.button.default:hover {border-color: #45a5ff; background-color: #45a5ff;}
+.button.default:active {border-color: #2c8de6; background-color: #2c8de6;}
+.button.empty {border-color: #e4e4e4; background-color: #f5f5f5; color: #999;}
+.button.image {border-width: 0; padding: 0; vertical-align: bottom;}
+.button.disable, .button.disable:hover {border-color: #e4e4e4; background-color: #f5f5f5; color: #ccc; box-shadow: none;}
+
+.c-alert-box {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: fixed;
+	z-index: 1010;
+	padding: 2em 3em;
+	max-width: 45vw;
+	min-width: 24em;
+	min-height: 4em;
+	max-height: 8em;
+	border-radius: 3px;
+	background-color: #fff;
+	box-shadow: 0px 0px 14px rgba(0, 0, 0, 0.5);
+	transition: opacity, transform 0.5s, 0.3s;
+	transform: translate(calc(50vw - 50%), calc(50vh - 50%));
+	opacity: 0;
+}
+.c-alert-box.sliderin {
+	padding: 1em 3em;
+	max-width: 66.66vw;
+	min-width: 33.33vw;
+	min-height: 2em;
+	max-height: 4em;
+}
+.c-alert-box.sliderin.top {
+	top: 0;
+	border-radius: 0 0 3px 3px;
+	transform: translateX(50vw) translate(-50%, -100%);
+}
+.c-alert-box.sliderin.top.show {
+	transform: translateX(50vw) translateX(-50%);
+}
+.c-alert-box.sliderin.bottom {
+	top: 100%;
+	border-radius: 3px 3px 0 0;
+	transform: translateX(50vw) translate(-50%);
+}
+.c-alert-box.sliderin.bottom.show {
+	transform: translateX(50vw) translate(-50%, -100%);
+}
+.c-alert-box.show {
+	transform: translate(50vw, 50vh) translate(-50%, -50%);
+	opacity: 1;
+}
+
+.c-alert-content {
+	text-align: center;
+	max-height: inherit;
+	overflow: auto;
+}
+
+.c-promptBox {background-color: rgba(51, 51, 51, 0.5); min-width: 300px; max-width: 360px; padding: 20px; font-size: 12px; line-height: 1.6; color: #fff; position: absolute; z-index: 1010; animation: show 0.15s;}
+.c-promptBox-tag {color: #00ffff;}
+.c-promptBox::before {content: ""; border: solid; border-right-color: rgba(51, 51, 51, 0.5); border-width: 4px 8px 4px 0px; position: absolute; top: 8px; left: -8px;}
+.c-window-shadow {position: absolute; z-index: 1009; top: 0; right: 0; bottom: 0; left: 0; background-color: rgba(0, 0, 0, 0.5);}
+.c-window-box {position: absolute; z-index: 1010; display: flex; flex-direction: column; justify-content: flex-start; top: 15%; left: calc(50% - 450px); width: 900px; transition: opacity 0.5s; background-color: #fff; box-shadow: 0px 0px 10px #777;}
+.c-window-title {flex: none; display: flex; justify-content: space-between; border-bottom: 1px solid #ddd; padding: 0 20px; width: 100%; line-height: 54px; background-color: #fff; font-size: 14px;}
+.c-window-close {padding-left: 1em; opacity: 0.5; cursor: pointer;}
+.c-window-close:hover {opacity: 1;}
+.c-window-close::after {content: "×"; display: block; line-height: 48px; font-size: 36px;}
+.c-window-content {position: relative; padding: 20px; padding-bottom: 10px; max-height: calc(100vh - 200px); overflow: auto; color: #777;}
+.c-window-content::-webkit-scrollbar {width: 6px; background-color: #eee;}
+.c-window-content::-webkit-scrollbar-thumb {border-radius: 3px; background-color: #ccc;}
+.c-window-content::-webkit-scrollbar-thumb:window-inactive {background: #ddd;}
+.c-window-console {flex: none; display: flex; justify-content: flex-end; padding: 20px; padding-top: 10px; line-height: 30px;}
+.c-select-box {vertical-align: baseline;}
+.c-select-box:after {content: ""; clear: both;}
+.c-select {display: block; position: relative; cursor: pointer;}
+.c-select > .select-icon {float: left; margin-right: 0.5em; width: 1em; color: #319cff;}
+.c-select > .select-show {display: block; float: left; margin-right: 2em; width: calc(100% - 2em); overflow: hidden; white-space: nowrap; text-overflow: ellipsis;}
+.select-icon ~ .select-show {width: calc(100% - 3.5em);}
+.c-select::before {content: "\3000"; margin-left: -1em;}
+.c-select::after {content: "\e113"; position: absolute; top: 0; right: 0.5em; font-family: 'Glyphicons Halflings'; opacity: 0.5; transform: rotate(180deg);}
+.c-select-box.open > .c-select::after {transform: rotate(0deg);}
+.介绍 {border: 1px solid; padding: 20px; margin: 0px;}
+.介绍 + * {margin-top: 20px;}
+.介绍.info {border-color: #319cff; background-color: #edfaff;}
+.介绍-标题 {margin-bottom: 5px;}
+.介绍-标题 > .glyphicon {font-size: 17px; vertical-align: text-bottom; margin-right: 6px;}
+.介绍-内容 {color: #999;}
+.步骤列表 {position: relative; padding: 0; list-style: none; counter-reset: bbb 0;}
+.步骤列表 .步骤 {position: relative; flex: 1 1 100%; margin: 0;}
+.步骤列表 .步骤::before {content: counter(bbb); counter-increment: bbb; display: block; position: absolute; top: 10px; width: 20px; margin: 0 auto; height: 20px; line-height: 20px; border: none; border-radius: 50%; text-align: center; color: #fff; background-color: #319cff;}
+.步骤列表 .步骤-title {margin: 0; padding: 0; padding-left: 40px; line-height: 40px;}
+.步骤列表 .步骤-content {margin: 0; margin-left: 10px; padding: 15px 30px; min-height: 80px; border-left: 1px solid #319cff;}
+.步骤列表 .步骤:last-child .步骤-content {border-color: transparent;}
+.步骤列表.横向 {display: flex; text-align: center;}
+.步骤列表.横向 .步骤::before {position: relative; z-index: 1; top: 0; width: 40px; height: 40px; border: 10px solid #fff;}
+.步骤列表.横向 .步骤 + .步骤::after {content: ""; display: block; position: absolute; top: 20px; right: 50%; width: 100%; height: 1px; background-color: #319cff;}
+.步骤列表.横向 .步骤-title {margin: 0; padding: 0; line-height: inherit; font-weight: 600;}
+.步骤列表.横向 .步骤-content {padding: 10px 2em 0 2em; border: none; min-height: 0;}
+.地区列表.active {display: inline-block;}
+.地区列表 {display: none; cursor: default;}
+.地区列表 > a {display: inline-block; padding: 0 14px; line-height: 22px; border: 1px solid transparent; color: #ddd; font-size: 12px; cursor: pointer;}
+.地区列表 > a.active {color: #319cff; border-color: #319cff;}
+body > header {width: 100%; position: absolute; z-index: 1000}
+.置顶LOGO栏 {height: 50px; width: 100%; background: #3c4f6d; color: #319cff; padding: 10px; line-height: 30px; position: absolute; z-index: 1000;}
+.置顶LOGO栏 > span {position: relative; top: 6px; font-size: 12px;}
+.置顶LOGO栏:hover + .页面标签栏, .页面标签栏:hover {}
+.置顶LOGO栏 .应用列表 {margin-left: 50px; margin-right: 30px; padding-left: 0.6em; border: 1px solid #319cff; min-width: 160px; line-height: 28px; font-size: 14px; color: #000; background-color: #fff;}
+.置顶LOGO栏 .应用列表 .dropdown-menu a:hover {color: #319cff;}
+.页面标签栏 {top: 50px; height: 105px; width: 100%; border-bottom: 5px solid #319cff; background-color: #485b79; opacity: 0.95; display: flex; position: absolute; z-index: 999; transition: transform 0.3s; transform: translateY(-100px);}
+.页面标签 {position: relative; border: 1px solid #485b79; width: 100px; height: 100px; background: no-repeat center 35%; background-size: 32px 32px; flex: none; text-align: center; color: white; line-height: 144px; font-size: 12px; cursor: default;}
+.页面标签:hover, .页面标签.active {background-color: #3c4f6d;}
+.页面标签.active::after {content: ""; position: absolute; left: 40px; bottom: -1px; border: solid; border-width: 8px 8.5px 8px 8.5px; border-color: transparent; border-bottom-color: #319cff;}
+header + div {height: 55px;}
+.正文 {display: flex; height: calc(100vh - 55px); background-color: #eee;}
+.侧边栏 {width: 180px; border-right: 1px solid #ddd; overflow: auto; flex: none; background-color: #f5f5f5;}
+.侧边栏分类标签 {font-family: 'Arial Negreta', 'Arial'; font-weight: 700; font-size: 12px; color: #B0B0B0; padding: 30px 20px 10px 20px; background-color: #f5f5f5;}
+.panel {background-color: transparent; margin: 0; border: 0; border-radius: 0; box-shadow: none;}
+.折叠标签 {color: #646464; font-size:12px; font-style:normal; font-weight:normal; padding: 10px 43px; background-color: #f5f5f5; background-repeat: no-repeat; background-position: 18px 50%; position: relative; height: 38px; width:100%; cursor: default;}
+label.折叠标签::after {content: ""; position: absolute; display: block; border: 4px solid transparent; border-top-color: currentcolor; right: 12px; top: 17px; transition: transform 0.5s;}
+.折叠标签:hover, .折叠标签.active {font-weight: 400; color: #319cff;}
+input[type=checkbox]:checked + label.折叠标签::after {transform: rotate(180deg) translateY(4px);}
+.折叠标签[for=panel-运营概览] {background-image: url("/images/1.1.0-icon/desktop_mac(1).png");}
+.折叠标签[for=panel-运营概览]:hover, .折叠标签[for=panel-运营概览].active {background-image: url("/images/1.1.0-icon/desktop_mac.png");}
+.折叠标签[for=panel-通话分析] {background-image: url("/images/1.1.0-icon/local_phone(1).png");}
+.折叠标签[for=panel-通话分析]:hover, .折叠标签[for=panel-通话分析].active {background-image: url("/images/1.1.0-icon/local_phone.png");}
+.折叠标签[for=panel-接听分析] {background-image: url("/images/1.1.0-icon/power(1).png");}
+.折叠标签[for=panel-接听分析]:hover, .折叠标签[for=panel-接听分析].active {background-image: url("/images/1.1.0-icon/power.png");}
+.折叠标签[for=panel-财务管理] {background-image: url("/images/1.1.0-icon/money(1).png");}
+.折叠标签[for=panel-财务管理]:hover, .折叠标签[for=panel-财务管理].active {background-image: url("/images/1.1.0-icon/money.png");}
+.折叠标签[for=panel-开发管理] {background-image: url("/images/1.1.0-icon/plug(1).png");}
+.折叠标签[for=panel-开发管理]:hover, .折叠标签[for=panel-开发管理].active {background-image: url("/images/1.1.0-icon/plug.png");}
+.折叠内容 {font-size: 12px; color: #646464; padding: 15px 0; background-color: #eee;}
+.折叠内容 a {display: block; height: 36px; line-height: 36px; color: #646464; padding-left: 50px; cursor: default;}
+.折叠内容 a:hover, .折叠内容 a.active {color: #319cff; font-weight: 400;}
+.展示区 {position: relative; width: calc(100% - 180px); ; overflow: hidden;}
+.展示区 > section {position: absolute; top: 0px; width: 100%; height: 100%; padding: 0 30px; overflow: auto; background-color: #eee; display: none;}
+.展示区 > section::after {content: ""; display: block; height: 30px; width: 100%;}
+.行 {padding-top: 30px; width: 100%; display: flex; justify-content: space-between; flex-wrap:wrap;}
+.flexbox {width: 100%; display: flex; justify-content: space-between;}
+.icon {display: inline-block; height: 16px; width: 16px; background-size: 16px 16px; position: relative; top: 3px;}
+.icon-升高 {background-image: url("/images/1.1.0-icon/trending_up.png");}
+.icon-降低 {background-image: url("/images/1.1.0-icon/trending_down.png");}
+.icon-不变 {background-image: url("/images/1.1.0-icon/trending_neutral.png");}
+.prompt {color: #ccc; top: 2px; font-size: 14px; cursor: default;}
+.窗口 {width: 100%; display: flex; justify-content: space-between; flex-wrap:wrap; border:1px solid #E4E4E4;}
+.窗口标题 {border-bottom: 1px solid #ddd; width: 100%; background-color: #fff;}
+.窗口标题 > span {display: inline-block; padding: 18px 0 18px 20px; font-weight: 400; font-size: 14px; line-height: 18px;}
+.窗口内容 {width: 100%; background-color: #fff; padding: 0 20px;}
+.窗口内容:last-child {padding-bottom: 20px;}
+.窗口标题 + .窗口内容, .窗口内容:first-child {padding-top: 20px;}
+.图表区域 {position: relative; width: 100%; height: 350px; background-color: #fff;}
+.表单区域 {width: 100%; height: 350px; padding:30px; background-color: #fff; display:none;}
+.表单区域.active {display:block;}
+.表格 {position: relative; width: 100%; padding: 20px; background-color: #fff;}
+.表格 table {width: 100%; text-align: left; font-size: 12px; table-layout: fixed; border:1px solid #E4E4E4;}
+.表格 thead {border-bottom: 1px solid #ddd; color: #3c4f6d;}
+.表格 td {padding-left: 30px; line-height: 36px; height: 36px; width:1px; word-break: break-all;}
+.表格 td:nth-of-type(n+2) {text-align: center;}
+.表格 tbody tr:nth-child(2n+1) {background-color: #f5f5f5;}
+.表格.样式二 td {text-align: left;}
+.表格.样式二 thead {background-color: #f5f5f5;}
+.表格.样式二 tbody tr {background-color: transparent;}
+.分页 {width: 100%; height: 45px; display: flex; justify-content: flex-end; align-items: flex-end;}
+.分页 .总计 {flex: 1 1 auto; align-self: center;}
+.分页按钮 {border: 1px solid #ccc; padding: 2px 6px; margin-left: 12px; background-color: #f3f3f3; color: #666; cursor: default; font-size: 12px;}
+.分页按钮.active {color: #319cff; border-color: #319cff; background-color: #fff;}
+.分页按钮:hover {background-color: #fff;}
+.分页按钮.disable {opacity: 0.5;}
+.分页按钮.disable:hover {background-color: #f3f3f3;}
+.查询条件 {display: flex; line-height: 26px; font-size: 12px;}
+.查询条件 .button.default {width: 96px;}
+.查询条件 > * + * {margin-left: 10px;}
+.查询条件 + table {margin-top: 20px;}
+.查询条件-输入框 {display: inline-block; position: relative; padding-left: 1em; border: 1px solid #D9D9D9; width: 120px; min-height: 28px; color: #999; background-color: #fff;}
+select.查询条件-输入框 {padding: 0 0.8em;}
+.日期选择器 {display: inline-block; position: relative;}
+.日期选择器 input {width: 100%; border: none;}
+.日期选择器 .glyphicon {position: absolute; z-index: 0; top: 50%; right: 6px; transform: translateY(-50%); pointer-events: none;}
+.日期选择 {float: right; margin-right: 18px; height: 54px; display: flex; align-items: center;}
+.日期选择 a {display: inline-block; margin: 0 16px; cursor: pointer;}
+.日期选择 a.active {color: #319cff;}
+.筛选菜单 {width: 120px; height: 30px; padding-left: 18px; border: 1px solid #ccc; background-color: white; text-align: left; position: relative; outline: none; box-shadow: -20px 0px 0px #319cff inset;}
+.筛选菜单::after {content: ""; position: absolute; top: 9px; right: 7px; width: 6px; height: 6px; border: 1px solid white; border-left-color: transparent; border-top-color: transparent; transform: rotateZ(45deg);}
+.dropdown-menu .noClick {color: darkgrey;}
+.dropdown-menu a {cursor: pointer;}
+.label-inline {color: #858585; display: inline-block; min-width: 6em; padding-right: 2em;}
+.label-input {display: inline-block; min-width: 120px; line-height: 40px; padding-right: 20px;}
+p.提示信息 {margin: 0; line-height: 0px;}
+p.提示信息 + p {margin-top: 10px;}
+.提示信息.error {color: #d81e06;}
+.提示信息.right {color: #060;}
+.提示信息::after, .label-input::after {content: "\3000"; margin-left: -1em;}
+.input + .label-input, .input + .button, .button + .input, .input + .提示信息, .button + .提示信息 {margin-left: 20px;}
+.button.save {line-height: 30px;}
+.分项 {position: relative; flex: 1 1 auto; width: 0; height: 150px; background-color: #f5f5f5; text-align: center; cursor: default;}
+.分割线 {width: 1px; background-color: #ddd; flex: none;}
+.simple .分项 {height: auto; line-height: 35px; border-bottom: 1px solid #E4E4E4;}
+.fixed .分项 {max-width: 220px;}
+.fixed .fill-block {flex: 1 1 auto; background-color: #fff; border-bottom: 1px solid #E4E4E4; pointer-events: none;}
+.分项.active {background-color: #fff; border-color: transparent;}
+.分项 span {cursor: default;}
+.分项 div:nth-of-type(2n+1) {line-height: 54px; font-size: 12px;}
+.分项 div:nth-of-type(2) {font-size: 32px; line-height: 1; margin-bottom: 6px;}
+#实时数据 .分项 {height: 150px;}
+#客户活跃 .分项, #活跃分析 .分项 {height: 150px; background-color: #fff;}
+.percent {color: #319cff; font-weight: 600;}
+.服务列表 {position: relative; list-style: none; padding: 0; margin: -20px 0; min-height: 150px;}
+.服务 {box-sizing: content-box; display: flex; align-items: center; min-height: 90px; padding: 30px 0; border-bottom: 1px solid #ddd;}
+.服务:last-child {border: none;}
+.服务 > * {flex: 0 0 auto;}
+.服务 > * + * {margin-left: 20px;}
+.服务 > .button {line-height: 30px;}
+.服务-示意图 {width: 60px; height: 60px;}
+.服务-简介 {flex: 1 1 auto; margin-right: 60px; max-height: 90px; overflow: hidden;}
+.服务-title {font-weight: 600;}
+.白名单号码列表 {padding: 10px 0; position: relative;}
+.白名单号码列表 > p {line-height: 30px; margin-bottom: 20px;}
+.白名单号码列表 > p > .button {visibility: hidden;}
+.白名单号码列表 > p > .input.right:focus + .button, .白名单号码列表 > p > .button:hover {visibility: visible;}
+/* 通用简写样式 */
+.hidden {display: none;}
+.ml2e {margin-left: 2em;}
+.w314 {width: 314px}
+.w100p {width: 100%}
+.h100p {height: 100%}
+.lh26 {line-height: 26px}
+.lh30 {line-height: 30px}
+.h40 {height: 40px}
+.c3 {color: #333}
+.c9 {color: #999}
+.fs14 {font-size: 14px;}
+.tac {text-align: center;}
+/* 加载提示 */
+.loading-line {display: flex; position: absolute; z-index: 1; top: 0; right: 0; bottom: 0; left: 0; background-color: inherit; justify-content: center;}
+.loading-line div:nth-of-type(n) {min-width: 2px; width: 0.5%; margin: 0 0.5%; padding: 0; border: 0px; background-color: #319cff; animation: scale 1s 0s ease-in-out infinite;}
+.loading-line div:nth-of-type(1) {animation-delay: -0.5s}
+.loading-line div:nth-of-type(2) {animation-delay: -0.4s}
+.loading-line div:nth-of-type(3) {animation-delay: -0.3s}
+.loading-line div:nth-of-type(4) {animation-delay: -0.2s}
+.loading-line div:nth-of-type(5) {animation-delay: -0.1s}
+@keyframes rotate {0% {transform: rotate(0deg) scale(1)}50% {transform: rotate(180deg) scale(0.6)}100% {transform: rotate(360deg) scale(1)}}
+@keyframes show {0% {opacity: 0; transform-origin: -0px 10px; transform: scale(0);}100% {opacity: 1; transform-origin: -0px 10px; transform: scale(1);}}
+@keyframes scale {0% {transform: scaleY(0.08);}40% {transform: scaleY(0.24);}80% {transform: scaleY(0.08);}100% {transform: scaleY(0.08);}}

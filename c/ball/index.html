@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>ball</title>
+<script src="/js/jquery-3.2.1.js"></script>
+<script src="/js/ctools.js"></script>
+<script src="balls.js"></script>
+<style>
+body {text-align: center;}
+canvas {border: 1px dashed;}
+p {line-height: 2.5em;}
+</style>
+</head>
+<body>
+<canvas id="paints" width="1000" height="600"></canvas>
+<p>
+	width: <input id="width" type="number" value="1000">
+	height: <input id="height" type="number" value="600">
+	balls: <input id="balls" type="number" value="22">
+	maxR: <input id="maxR" type="number" value="88">
+	minR: <input id="minR" type="number" value="11"><br>
+	maxV: <input id="maxV" type="number" value="15">
+	minV: <input id="minV" type="number" value="3">
+	aX: <input id="aX" type="number" value="0">
+	aY: <input id="aY" type="number" value="0"><br>
+	maxP: <input id="maxP" type="number" value="1">
+	minP: <input id="minP" type="number" value="1">
+	D: <input id="D" type="number" value="2"><br>
+	loss-wall: <input id="loss-wall" type="number" value="0.03">
+	loss-ball: <input id="loss-ball" type="number" value="0.03">
+	<button onclick="chen.debug = !chen.debug; this.innerHTML='debug (now:' + (chen.debug?'on':'off') + ')'">debug (now:off)</button>
+	<button id="reset">reset</button>
+	<button id="stop">stop</button>
+	<button onclick="绘制()">draw</button>
+</p>
+</body>
+<script type="text/javascript">
+const win = $(window);
+const doc = $(document);
+const body = $("body");
+const paints = $("#paints");
+const width = $("#width");
+const height = $("#height");
+const balls = $("#balls");
+const maxR = $("#maxR");
+const minR = $("#minR");
+const maxV = $("#maxV");
+const minV = $("#minV");
+const aX = $("#aX");
+const aY = $("#aY");
+const maxP = $("#maxP");
+const minP = $("#minP");
+const D = $("#D");
+const loss_wall = $("#loss-wall");
+const loss_ball = $("#loss-ball");
+const reset = $("#reset");
+const stop = $("#stop");
+const context = paints[0].getContext(`2d`);
+let ballList = [];
+
+let version = 0;
+win.on("keydown", "input", e => {if (e.which == 13) reset[0].click(); return false;});
+stop.click(e => version++);
+reset.click(e => {
+	let _width = +width.val();
+	let _height = +height.val();
+	let _balls = +balls.val();
+	let _maxR = +maxR.val();
+	let _minR = +minR.val();
+	let _maxV = +maxV.val();
+	let _minV = +minV.val();
+	let _aX = +aX.val();
+	let _aY = +aY.val();
+	let _maxP = +maxP.val();
+	let _minP = +minP.val();
+	let _D = +D.val();
+	paints.css({width: _width, height: _height}).attr({width: _width, height: _height});
+	ballList.length = 0;
+	循环(_balls, i => {
+		let nx = _maxR + Math.random()*(_width - 2 * _maxR);
+		let ny = _maxR + Math.random()*(_height - 2 * _maxR);
+		let vx = 2 * Math.random() * _maxV - _maxV;
+		let vy = 2 * Math.random() * _maxV - _maxV;
+		let r = _minR + Math.random()*(_maxR - _minR);
+		let p = _minP + Math.random()*(_maxP - _minP);
+		let _color = "#" + (Math.floor(Math.random() * 256)).toString(16) + (Math.floor(Math.random() * 256)).toString(16) + (Math.floor(Math.random() * 256)).toString(16);
+		ballList.push(new Ball(i, nx, ny, vx, vy, _aX, _aY, r, {color: _color}, p, _D).setbox(_width, _height));
+	})
+	绘制();
+});
+function 绘制() {
+	let _version = ++version;
+	let _width = +width.val();
+	let _height = +height.val();
+	let _loss_wall = +loss_wall.val();
+	let _loss_ball = +loss_ball.val();
+	function paint() {
+		context.clearRect(0, 0, _width, _height);
+		ballList.forEach(ball => ball.move(_loss_wall));
+		ballList.forEach(ball => ballList.forEach(_ball => Ball.bump(ball, _ball, _loss_ball)));
+		ballList.forEach(ball => 画圆(context, ball.nx, ball.ny, ball.r, ball.attr.color));
+		if (_version == version) requestAnimationFrame(paint);
+	}
+	paint();
+}
+paints.mousedown(e => {for (let ball of ballList) {
+	if (ball.onball(e.offsetX, e.offsetY)) {
+		function endfunc() {
+			ball.unbindmove(win);
+			win.off("mouseup", endfunc);
+		}
+		ball.bindmove(win, e.pageX, e.pageY, Ball.拉伸类型_放射);
+		win.mouseup(endfunc);
+		return false;
+	}
+}});
+</script>
+</html>

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<script type="text/javascript" src="/js/jquery-3.2.1.min.js"></script>
+<title>扫雷</title>
+<style>
+* {
+	padding: 0px;
+	margin: 0px;
+	font-family: '微软雅黑';
+	line-height: 1;
+}
+body {
+	background-color: #fbf9fe;
+	text-align: center;
+}
+.head {
+	font-size: 16px;
+	margin: 32px;
+}
+.main {
+	display: inline-block;
+}
+
+.line {
+	
+}
+.box_show {
+	width: 2rem;
+	height: 2rem;
+	line-height: 2rem;
+	text-align: center;
+	display: inline-block;
+	vertical-align: middle;
+	background-color: #eee;
+	border: 0.125rem solid #ccc;
+}
+
+.box {
+	width: 2rem;
+	height: 2rem;
+	line-height: 2rem;
+	text-align: center;
+	display: inline-block;
+	vertical-align: middle;
+	border: 0.125rem solid #555;
+	border-top: 0.125rem solid #ddd;
+	border-left: 0.125rem solid #ddd;
+	background-color: #999;
+}
+
+.box:active {
+	border: 0.125rem solid #ddd;
+	border-top: 0.125rem solid #555;
+	border-left: 0.125rem solid #555;
+	background-color: #eee;
+}
+</style>
+</head>
+<body>
+	<div class="head">
+		高：<input style="width: 32px;" type="number" id="height" value="10"/>
+		宽：<input style="width: 32px;" type="number" id="width" value="10"/>
+		雷数：<input style="width: 32px;" type="number" id="num" value="20"/>
+		<button onclick="init();">初始化</button>
+		未探明：<span style="width: 32px;" id="all">0</span>
+	</div>
+	<div id="main" class="main">
+	</div>
+</body>
+<script>
+var height;
+var width;
+var num;
+var all = 0;
+var first = true;
+var ing = true;
+var repeat;
+$(function(){
+	//init();
+	//var aaa = "1233#11111#31221";
+	//alert(aaa.substring(aaa.indexOf("#")+1, aaa.lastIndexOf("#")));
+});
+function countL(){
+	$("#all").html(all);
+	if (all == num) {
+		alert("成功！");
+	} else if (all != 0) {
+		repeat = setTimeout(countL,100);
+	}
+}
+function init() {
+	height = ($("#height").val() == "")?10:(Number($("#height").val())<10?10:Number($("#height").val()));
+	width = ($("#width").val() == "")?10:(Number($("#width").val())<10?10:Number($("#width").val()));
+	num = ($("#num").val() == "")?20:(Number($("#num").val())<20?20:Number($("#num").val()));
+	$("#height").val(height);
+	$("#width").val(width);
+	$("#num").val(num);
+	first = true;
+	ing = true;
+	all = height*width;
+
+	var map = new Array();
+	for (var i = 0; i < height; i++) {
+		map[i] = new Array();
+		for (var j = 0; j < width; j++) {
+			map[i][j] = 0;
+		}
+	}
+	var count = 0;
+	while (count < num) {
+		var h = ram(height);
+		var w = ram(width);
+		if (map[h][w] == 0) {
+			map[h][w] = -1;
+			count++;
+		}
+	}
+	for (var i = 0; i < height; i++) {
+		for (var j = 0; j < width; j++) {
+			if (map[i][j] == -1) continue;
+			var top = (i == 0)?0:(map[i-1][j]<0?1:0);
+			var top_left = (i == 0 || j == 0)?0:(map[i-1][j-1]<0?1:0);
+			var top_right = (i == 0 || j == (width - 1))?0:(map[i-1][j+1]<0?1:0);
+			var left = (j == 0)?0:(map[i][j-1]<0?1:0);
+			var right = (j == (width - 1))?0:(map[i][j+1]<0?1:0);
+			var bottom = (i == (height - 1))?0:(map[i+1][j]<0?1:0);
+			var bottom_left = (i == (height - 1) || j == 0)?0:(map[i+1][j-1]<0?1:0);
+			var bottom_right = (i == (height - 1) || j == (width - 1))?0:(map[i+1][j+1]<0?1:0);
+			map[i][j] = top + top_left + top_right + left + right + bottom + bottom_left + bottom_right;
+		}
+	}
+
+	draw(map);
+	
+	if (height > width) {
+		$("html").css("font-size",32*10/height + "px");
+	} else {
+		$("html").css("font-size",32*10/width + "px");
+	}
+	$("#main").css("width",(Number($("#b_0_0").css("width").replace("px","")) + Number($("#b_0_1").css("border-left-width").replace("px",""))*2)*width + "px");
+ 
+	window.clearTimeout(repeat);
+	repeat = setTimeout(countL,100);
+	$(".box").bind("contextmenu",function(e){e.preventDefault();});
+	$(".box").mousedown(function(e){
+		var type = e.which;
+		switch (type) {
+		case 1:
+			activeClick($(this));
+			break;
+		case 2:
+			activeAround($(this));
+			break;
+		case 3:
+			mark($(this));
+			break;
+		default:
+			return false;
+		}
+	});
+}
+function ram(number) {
+	var ram_number = 1;
+	while (ram_number == 1) {
+		ram_number = Math.random();
+	}
+	return Math.floor(ram_number * number);
+}
+function draw(map) {
+	$("#main").html("");
+	for (var i = 0; i < height; i++) {
+		$("#main").append("<div class='line' id='line_" + i +"'></div>");
+		for (var j = 0; j < width; j++) {
+			$("#line_" + i).append("<div class='box' h='" + i  +"' w='" + j  +"' value='" + map[i][j] + "' id='b_" + i + "_" + j + "'>" + "" +"</div>");
+		}
+	}
+}
+function mark(box){
+	if(box.attr("class") == undefined) return false;
+	if(box.attr("class").toLocaleLowerCase().indexOf("box_show") > -1) return false;
+	var text =box.html();
+	if (text != "!") {
+		box.html("!");
+	} else {
+		box.html("");
+	}
+}
+function activeAround(box) {
+	if(box.attr("class") == undefined) return false;
+	if(box.attr("class").toLocaleLowerCase().indexOf("box_show") == -1) {
+		activeClick(box);
+		return false;
+	}
+	var h = Number(box.attr("h"));
+	var w = Number(box.attr("w"));
+	var u_c = ($("#b_" + (h-1) + "_"+ (w-1)).html() == "!"?1:0) +
+	($("#b_" + (h-1) + "_"+ (w)).html() == "!"?1:0) +
+	($("#b_" + (h-1) + "_"+ (w+1)).html() == "!"?1:0) +
+	($("#b_" + (h) + "_"+ (w-1)).html() == "!"?1:0) +
+	($("#b_" + (h) + "_"+ (w+1)).html() == "!"?1:0) +
+	($("#b_" + (h+1) + "_"+ (w-1)).html() == "!"?1:0) +
+	($("#b_" + (h+1) + "_"+ (w)).html() == "!"?1:0) +
+	($("#b_" + (h+1) + "_"+ (w+1)).html() == "!"?1:0);
+	
+	if ( u_c >= Number(box.attr("value"))) {
+		if ("boom" == activeClick($("#b_" + (h-1) + "_"+ (w-1)))) return false;
+		if ("boom" == activeClick($("#b_" + (h-1) + "_"+ (w)))) return false;
+		if ("boom" == activeClick($("#b_" + (h-1) + "_"+ (w+1)))) return false;
+		if ("boom" == activeClick($("#b_" + (h) + "_"+ (w-1)))) return false;
+		if ("boom" == activeClick($("#b_" + (h) + "_"+ (w+1)))) return false;
+		if ("boom" == activeClick($("#b_" + (h+1) + "_"+ (w-1)))) return false;
+		if ("boom" == activeClick($("#b_" + (h+1) + "_"+ (w)))) return false;
+		if ("boom" == activeClick($("#b_" + (h+1) + "_"+ (w+1)))) return false;
+	}
+}
+function show(box) {
+	if(box.attr("class") == undefined) return;
+	if(box.attr("class").toLocaleLowerCase().indexOf("box_show") > -1) return;
+	if (box.html() == "!") return;
+	var value = Number(box.attr("value"));
+	switch (value) {
+	case -1:
+		return;
+		break;
+	case 0:
+		box.removeClass("box");
+		box.addClass("box_show");
+		all--;
+		var h = Number(box.attr("h"));
+		var w = Number(box.attr("w"));
+		show($("#b_" + (h-1) + "_"+ (w-1)));
+		show($("#b_" + (h-1) + "_"+ (w)));
+		show($("#b_" + (h-1) + "_"+ (w+1)));
+		show($("#b_" + (h) + "_"+ (w-1)));
+		show($("#b_" + (h) + "_"+ (w+1)));
+		show($("#b_" + (h+1) + "_"+ (w-1)));
+		show($("#b_" + (h+1) + "_"+ (w)));
+		show($("#b_" + (h+1) + "_"+ (w+1)));
+		break;
+	default:
+		box.html(value);
+		box.removeClass("box");
+		box.addClass("box_show");
+		all--;
+		break;
+	}
+}
+function activeClick(box){
+	if(box.attr("class") == undefined) return false;
+	if(box.attr("class").toLocaleLowerCase().indexOf("box_show") > -1) return false;
+	if(box.html() == "!") return false;
+	var value = Number(box.attr("value"));
+	switch (value) {
+	case -1:
+		if (first) {
+			var id = box.attr("id");
+			init();
+			activeClick($("#" + id));
+			return false;
+		}
+		alert("boom!");
+		showAll();
+		window.clearTimeout(repeat);
+		return "boom";
+		break;
+	case 0:
+		show(box);
+		break;
+	default:
+		box.html(value);
+		box.removeClass("box");
+		box.addClass("box_show");
+		all--;
+		break;
+	}
+	first = false;
+	return false;
+}
+function showAll(){
+	if(!ing) return false;
+	for (var i = 0; i < height; i++) {
+		for (var j = 0; j < width; j++) {
+			var box = $("#b_" + i + "_" + j);
+			if(box.attr("class").toLocaleLowerCase().indexOf("box_show") > -1) continue;
+			var value = Number(box.attr("value"));
+			var text = box.html();
+			switch (value) {
+			case -1:
+				if (text == "!") {
+					box.html("√");
+				} else {
+					box.html("×");
+				}
+				break;
+			case 0:
+				box.removeClass("box");
+				box.addClass("box_show");
+				break;
+			default:
+				box.html(value);
+				box.removeClass("box");
+				box.addClass("box_show");
+				break;
+			}
+		}
+	}
+	all = 0;
+	ing = false;
+}
+</script>
+</html>

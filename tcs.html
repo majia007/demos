@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>gm</title>
+<style>
+* {
+	padding: 0px;
+	margin: 0px;
+	font-family: '微软雅黑';
+	line-height: 1;
+}
+body {
+	background-color: #fbf9fe;
+	text-align: center;
+}
+.head {
+	margin-top: 24px;
+}
+p {padding: 8px 0px;}
+.main {
+	display: inline-block;
+	border: 2px solid #ccc;
+}
+
+</style>
+</head>
+<body>
+	<div id="head" class="head">
+		<p>
+			高：<input style="width: 4rem;" type="number" id="height" value="80"/>格；
+			宽：<input style="width: 4rem;" type="number" id="width" value="150"/>格；
+			长：<input style="width: 4rem;" type="number" id="length" value="8"/>格；
+			移动间隔：<input style="width: 4rem;" type="number" id="speed" value="20"/>毫秒；
+			<button id="init" style="display: inline-block;" onclick="initGame();">重置游戏</button>
+			<button id="continue" style="display: none;" onclick="continueGame();">继续游戏</button>
+		</p>
+		<p>得分：<span id="count">0</span></p>
+	</div>
+	<canvas id="main" class="main"></canvas>
+	<p>按空格键开始/暂停</p>
+</body>
+<script>
+var intervalID = null;
+var game = false;
+var pause = false;
+var waitChange = false;
+var up = 38;
+var down = 40;
+var left = 37;
+var right = 39;
+var x = 0;	//蛇头位置x
+var y = 0;	//蛇头位置y
+var f_x = -1;
+var f_y = -1;
+var forward = 39;	//方向
+var block = 8;	//区块大小
+var time = 500;	//移动速度
+var body = new Array();
+var l = 2;
+var bt_init = document.getElementById("init");
+var bt_continue = document.getElementById("continue");
+var width = document.getElementById("width");
+var height = document.getElementById("height");
+var length = document.getElementById("length");
+var speed = document.getElementById("speed");
+var count = document.getElementById("count");
+var canvas = document.getElementById("main");
+function initGame(){
+	game = true;
+	pause = false;
+	if(intervalID != null) window.clearInterval(intervalID);
+	if(width.value < 48) width.value=48;
+	if(height.value < 36) height.value=36;
+	if(speed.value == "") speed.value=500;
+	if(length.value < 2) length.value=2;
+	if(length.value > width.value-2) length.value=width.value-2;
+	time = Number(speed.value);
+	l = length.value;
+	body = new Array();
+	for (var i = 0; i < l; i++) {
+		x = i-1;
+		y = Math.floor(Number(height.value)/2);
+		body.push([x,y]);
+	}
+	forward = right;
+	var api = canvas.getContext("2d");
+	api.clearRect(0,0,canvas.width,canvas.height);
+	canvas.width = Number(width.value)*block;
+	canvas.height = Number(height.value)*block;
+	count.textContent = "0";
+	width.readOnly = true;
+	height.readOnly = true;
+	speed.readOnly = true;
+	length.readOnly = true;
+	newFood();
+	draw();
+	pauseGame();
+}
+function calcBody(){
+	switch (forward) {
+	case up:
+		y--;
+		break;
+	case down:
+		y++;
+		break;
+	case left:
+		x--;
+		break;
+	case right:
+		x++;
+		break;
+	default:
+		break;
+	}
+	if(x>=Number(width.value) || y>=Number(height.value) || x<=-1 || y<=-1) {
+		gameEnd("撞墙啦");
+		return false;
+	}
+	body.push([x,y]);
+	if(x==f_x && y==f_y) {
+		l++;
+		count.textContent = Number(count.textContent)+1;
+		newFood();
+	} else {
+		body.shift();
+	}
+	return true;
+}
+function draw(){
+	var api = canvas.getContext("2d")
+	if(!calcBody()) return false;
+	api.clearRect(0,0,canvas.width,canvas.height);
+	var pz = 0;
+	for (var i = 0; i < body.length; i++) {
+		var b = body[i];
+		if(b[0]==x && b[1]==y) pz++;
+		api.fillStyle = "#000";
+		api.fillRect(b[0]*block,b[1]*block,block,block);
+	}
+	api.fillStyle = "#ff0000";
+	api.fillRect(f_x*block,f_y*block,block,block);
+	waitChange = true;
+	if(pz > 1) gameEnd("撞到自己啦");
+}
+function newFood(){
+	do {
+		f_x= Math.floor(Math.random()*Number(width.value));
+		f_y= Math.floor(Math.random()*Number(height.value));
+	} while (f_x>=width.value || f_y>=height.value);
+	var f_p = false;
+	for (var i = 0; i < body.length; i++) {
+		var b = body[i];
+		if(b[0]==f_x && b[1]==f_y) f_p==true;
+	}
+	if(f_p) newFood();
+}
+function gameEnd(msg){
+	window.clearInterval(intervalID);
+	game = false;
+	width.readOnly = false;
+	height.readOnly = false;
+	speed.readOnly = false;
+	length.readOnly = false;
+	alert(msg);
+}
+function pauseGame(){
+	pause = true;
+	bt_init.style.display = "none";
+	bt_continue.style.display = "inline-block";
+	if(intervalID != null) window.clearInterval(intervalID);
+}
+function continueGame(){
+	pause = false;
+	bt_init.style.display = "inline-block";
+	bt_continue.style.display = "none";
+	intervalID = window.setInterval(draw, time);
+}
+document.onkeydown = function(e) {
+	if(game){
+		if([32,37,38,39,40].indexOf(e.keyCode)>-1){
+			if(e.keyCode == 32) {
+				if(pause){
+					continueGame();
+				}else{
+					pauseGame();
+				}
+				return false;
+			}
+			if(Math.abs(forward-e.keyCode) == 1 || Math.abs(forward-e.keyCode) == 3) {
+				if (waitChange && !pause) {
+					forward = e.keyCode;
+					waitChange = false;
+				}
+			}
+			e.preventDefault();
+		}
+	} else {
+		if(e.keyCode == 32) {
+			initGame();
+			return false;
+		}
+	}
+}
+</script>
+</html>

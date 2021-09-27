@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<script type="text/javascript" src="/js/jquery-3.2.1.js"></script>
+<script type="text/javascript" src="/js/ctools.js"></script>
+<script type="text/javascript" src="chat.js"></script>
+<link rel="stylesheet" href="/css/chen.css"/>
+<link rel="stylesheet" href="chat.css"/>
+<title>聊天测试</title>
+</head>
+<body>
+</body>
+<script>
+cChat.open("chat1 -> 2", "ws://127.0.0.1/chat", {userId: "1001", name: "user1", contact: "1002"}, 500);
+cChat.open("chat1 -> 3", "ws://127.0.0.1/chat", {userId: "1001", name: "user1", contact: "1003"}, 500);
+cChat.open("chat2 -> 1", "ws://127.0.0.1/chat", {userId: "1002", name: "user2", contact: "1001"}, 500);
+cChat.open("chat2 -> all", "ws://127.0.0.1/chat", {userId: "1002", name: "user2", contact: "0"}, 500);
+cChat.open("chat3 -> all", "ws://127.0.0.1/chat", {userId: "1003", name: "user3", contact: "0"}, 500);
+</script>
+</html>
