@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 
-const files = fs.readdirSync('./').filter(item => !item.match(/buildIndex|index.html/));
+const files = fs.readdirSync('./');
 const rootDir = path.resolve('./');
 
 const links = [];
@@ -13,21 +13,13 @@ const links = [];
 			build(fs.readdirSync(filePath), filePath);
 		} else if (file.endsWith('.html')) {
 			const htmlPath = path.relative(rootDir, filePath);
-			links.push(`<p><a href="${htmlPath}">${htmlPath}</a>><p>`);
+			links.push(`<p><a href="${htmlPath}">${htmlPath.replace(/index.html$/, '')}</a><p>`);
 		}
 	});
 })(files, rootDir);
 
-fs.writeFileSync('index.html', `
-<html lang="zh_CN">
-<head>
-<title>demo list</title>
-<meta charset="UTF-8">
-</head>
-<body>
+fs.writeFileSync('index.md', `
 ${links.join('\n')}
-</body>
-</html>    
 `, {encoding: 'utf8'});
 
 console.log(new Date());
