@@ -2,11 +2,11 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<script src="/js/jquery-1.11.1.min.js"></script>
-<script src="/js/jquery.ajaxfileupload.js"></script>
-<script src="/js/bootstrap-3.3.0.min.js"></script>
-<script type="text/javascript" src="/js/echarts.min.js"></script>
-<link rel="stylesheet" href="/css/bootstrap-3.3.0.min.css">
+<script src="./js/jquery-1.11.1.min.js"></script>
+<script src="./js/jquery.ajaxfileupload.js"></script>
+<script src="./js/bootstrap-3.3.0.min.js"></script>
+<script type="text/javascript" src="./js/echarts.min.js"></script>
+<link rel="stylesheet" href="./css/bootstrap-3.3.0.min.css">
 <title>测试</title>
 <style type="text/css">
 html {
@@ -448,7 +448,7 @@ html {
 	var 日期列表;
 	var 客户列表;
 	var 统计数据;
-	
+
 	$(function(){
 		$("#dataFile").ajaxfileupload({
 			action: '/uploadData.do',
@@ -472,7 +472,7 @@ html {
 			dataType: "json",
 			url: "/getData.do",
 			async: false,
-			contentType: 'application/x-www-form-urlencoded; charset=utf-8', 
+			contentType: 'application/x-www-form-urlencoded; charset=utf-8',
 			success: data => {
 				console.log(data);
 				客户列表 = data.客户列表;
@@ -559,7 +559,7 @@ html {
 		var 拨打数数据 = 获取数据("总业务统计", "拨打数");
 		var 接通率数据 = 获取数据("总业务统计", "接通率");
 		var 来电接听总时长数据 = 获取数据("总业务统计", "来电接听总时长");
-		
+
 		固定绑定数.setOption(顶部折线图.setTitle("固定绑定数").setData(固定绑定数数据).setColor("#6A2D51"));
 		动态绑定数.setOption(顶部折线图.setTitle("动态绑定数").setData(动态绑定数数据).setColor("#F85E82"));
 		拨打数.setOption(顶部折线图.setTitle("拨打数").setData(拨打数数据).setColor("#DA7447"));
@@ -657,7 +657,7 @@ html {
 			default:
 				break;
 			};
-			
+
 			echarts.init($("#" + 客户列表[i])[0]).setOption({
 				title : {
 					left : 'center',
@@ -756,7 +756,7 @@ html {
 				default:
 					break;
 				};
-				分组.添加项目(项目列表[j], data) 
+				分组.添加项目(项目列表[j], data)
 			}
 			$("#综合仪表").append(`<div id="综合仪表-` + 客户名 + `" class="综合仪表详图" ></div>`);
 			var 百分比绘图 = false;
@@ -856,7 +856,7 @@ html {
 			default:
 				break;
 			};
-			分组.添加项目(项目列表[i], data) 
+			分组.添加项目(项目列表[i], data)
 		}
 		for (var i = 0; i < 项目组.length; i++) {
 			$("#客户分表").append(`<div id="` + 客户名 + `-` + 项目组[i] + `" class="客户分表详图" ></div>`);
@@ -934,7 +934,7 @@ html {
 			url: "/getNews.do",
 			async: true,
 			data: {keyWords: 客户名},
-			contentType: 'application/x-www-form-urlencoded; charset=utf-8', 
+			contentType: 'application/x-www-form-urlencoded; charset=utf-8',
 			success: result => {
 				if (result.success) {
 					$(".新闻").unbind();

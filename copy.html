@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>复制</title>
-<script src="/js/jquery-1.11.1.min.js"></script>
-<script src="/js/clipboard.js"></script>
+<script src="./js/jquery-1.11.1.min.js"></script>
+<script src="./js/clipboard.js"></script>
 <style type="text/css">
 p {
 	text-align: center;
@@ -41,9 +41,9 @@ p {
 </body>
 <script type="text/javascript">
 var clipboard = new Clipboard('#btn1');
-clipboard.on('success', e => xzAlert('已复制号码：' + e.text)); 
+clipboard.on('success', e => cAlert('已复制号码：' + e.text));
 clipboard.on('error', e => $("button.number").select());
-const xzAlert = (msg, time=2000) => {
+const cAlert = (msg, time=2000) => {
 	let msgBox = $(`<div class="xzMsg">` + msg + `</div>`);
 	$(`body`).append(msgBox);
 	setTimeout(e=>msgBox.remove(), time);
