@@ -12,7 +12,7 @@ const links = [];
 		if (fs.statSync(filePath).isDirectory()) {
 			build(fs.readdirSync(filePath), filePath);
 		} else if (file.endsWith('.html')) {
-			const htmlPath = path.relative(rootDir, filePath);
+			const htmlPath = path.relative(rootDir, filePath).replace(/\\/g, '/');
 			links.push(`<p><a href="${htmlPath}">${htmlPath.replace(/index.html$/, '')}</a><p>`);
 		}
 	});
