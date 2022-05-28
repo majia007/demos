@@ -1,0 +1,71 @@
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+	<title>炮台命中率计算</title>
+	<style>
+		label {
+			margin: 12px 0;
+		}
+
+		#速度 {
+			width: 1000px;
+		}
+	</style>
+</head>
+<body>
+	<section>
+		<h1>命中率计算</h1>
+		速度(<span id="速度值"></span>m/s) <br><input type="range" id="速度" max="1000" min="0"><br>
+		信号分辨率 <br><input type="text" id="信号分辨率"><br>
+		转速 <br><input type="text" id="转速"><br>
+		信号半径 <br><input type="text" id="信号半径"><br>
+		距离 <br><input type="text" id="距离"><br>
+		最佳 <br><input type="text" id="最佳"><br>
+		失准 <br><input type="text" id="失准"><br>
+		结果 <br> <span id="结果"></span>
+	</section>
+</body>
+<script>
+	window.速度 = document.getElementById('速度');
+	window.信号分辨率 = document.getElementById('信号分辨率');
+	window.速度值 = document.getElementById('速度值');
+	window.转速 = document.getElementById('转速');
+	window.信号半径 = document.getElementById('信号半径');
+	window.距离 = document.getElementById('距离');
+	window.最佳 = document.getElementById('最佳');
+	window.失准 = document.getElementById('失准');
+	window.结果 = document.getElementById('结果');
+
+	window.速度.value = 100;
+	window.信号分辨率.value = 40000;
+	window.信号半径.value = 32;
+	window.距离.value = 6250;
+	window.转速.value = 14.6401677366;
+	window.最佳.value = 8919;
+	window.失准.value = 10110;
+
+	function 计算() {
+		let 速度 = window.速度.value;
+		let 信号分辨率 = window.信号分辨率.value;
+		let 转速 = window.转速.value;
+		let 信号半径 = window.信号半径.value;
+		let 距离 = window.距离.value;
+		let 最佳 = window.最佳.value;
+		let 失准 = window.失准.value;
+		速度值.textContent = 速度;
+
+		let 角速度 = 速度 / (2 * Math.PI * 距离);
+		结果.textContent = 0.5 ** (((角速度 * 信号分辨率) / (转速 * 信号半径)) ** 2 + (Math.max(0, 距离 - 最佳) / 失准) ** 2);
+	}
+
+	window.oninput = 计算() || 计算;
+
+	document.querySelectorAll('input').forEach(dom => dom.onmousewheel = e => {
+		const dom = e.target;
+		dom.value = +dom.value + (e.deltaY < 0 ? 1 : -1);
+		dom.value = Math.min(Math.max(dom.value, dom.min || 0), dom.max || 999999);
+		计算();
+	});
+</script>
+</html>
