@@ -9,7 +9,9 @@
 <p><a href="c/vue/index.html">c/vue/</a><p>
 <p><a href="copy.html">copy.html</a><p>
 <p><a href="edm.html">edm.html</a><p>
-<p><a href="eve-utils/伤害计算.html">eve-utils/伤害计算.html</a><p>
+<p><a href="eve-utils/导弹效率计算.html">eve-utils/导弹效率计算.html</a><p>
+<p><a href="eve-utils/炮台命中率计算.html">eve-utils/炮台命中率计算.html</a><p>
+<p><a href="eve-utils/等效伤害计算.html">eve-utils/等效伤害计算.html</a><p>
 <p><a href="fullscreen.html">fullscreen.html</a><p>
 <p><a href="fullscreen2.html">fullscreen2.html</a><p>
 <p><a href="index2.html">index2.html</a><p>
