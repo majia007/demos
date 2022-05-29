@@ -414,8 +414,7 @@ function getOptions(list) {
 	$.each(list, function(key, val) {if (val != undefined && key != undefined) s+="<option value='"+key+"'>"+val+"</option>";});
 	return s;
 }
-/** 
- * @author CJw
+/**
  * box = xzConfirm.int(selector:css选择器, opt:{title: 标题, content: 内容, drag: 是否可拖曳, yesWord, yesFunc, noWord, noFunc, width: number px宽度}) <br>
  * box: {close: 关闭窗口, setYes: 确定按钮事件, setNo: 取消按钮事件, unbindYes: 解绑确定按钮点击事件, unbindNo: 解绑取消按钮点击事件, find: 查找内容, drag: 可拖曳, fix: 禁止拖曳}
 */
