@@ -1,0 +1,115 @@
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+	<title>脑插强度计算</title>
+</head>
+<body>
+	<section>
+		一号基础强度 <input type="text" id="一号基础强度">%
+		<br>
+		一号额外加成 <input type="text" id="一号额外加成">%
+		<hr>
+		二号基础强度 <input type="text" id="二号基础强度">%
+		<br>
+		二号额外加成 <input type="text" id="二号额外加成">%
+		<hr>
+		三号基础强度 <input type="text" id="三号基础强度">%
+		<br>
+		三号额外加成 <input type="text" id="三号额外加成">%
+		<hr>
+		四号基础强度 <input type="text" id="四号基础强度">%
+		<br>
+		四号额外加成 <input type="text" id="四号额外加成">%
+		<hr>
+		五号基础强度 <input type="text" id="五号基础强度">%
+		<br>
+		五号额外加成 <input type="text" id="五号额外加成">%
+		<hr>
+		六号额外加成 <input type="text" id="六号额外加成">%
+		<hr>
+		其他整体加成 <input type="text" id="其他整体加成">%
+	</section>
+	<hr>
+	<section>
+		最终加成
+		<output type="text" id="最终加成"></output>
+	</section>
+	<hr>
+	<section>
+		<button onClick="openNewWindow()">开新窗口</button>
+	</section>
+</body>
+<!-- 工具方法 -->
+<script>
+	function getValue(input) {
+		return input.value.match(/[^\d.]/) && +(eval(input.value)) || +input.value || 0;
+	}
+	function showValue(num, rate = 1) {
+		return (Math.round(num * 100 * rate)) / 100;
+	}
+	function openNewWindow() {
+		window.open(location.href, '_blank', `width=450,height=880,left=${window.screenLeft + 32},top=${window.screenTop + 32}`);
+	}
+</script>
+<!-- 绑定滚轮改值与数据缓存 -->
+<script>
+	document.querySelectorAll('input').forEach(input => {
+		const id = input.id;
+		if (!id) return;
+		input.value = localStorage.getItem(id) || '0';
+		input.onfocus = e => input.select();
+		input.oninput = e => {
+			localStorage.setItem(id, input.value);
+			window.计算?.();
+		};
+		input.onmousewheel = e => {
+			input.value = String(Math.round(100 * (getValue(input) + (e.deltaY < 0 ? 1 : -1) * (+input.dataset.step || 1))) / 100);
+			input.value = String(Math.min(Math.max(+input.value, +input.min || 0), +input.max || 999999));
+			input.oninput();
+		};
+	});
+</script>
+<!-- 绑定元素, 方便IDE提示 -->
+<script>
+	window.一号基础强度 = document.getElementById('一号基础强度');
+	window.一号额外加成 = document.getElementById('一号额外加成');
+	window.二号基础强度 = document.getElementById('二号基础强度');
+	window.二号额外加成 = document.getElementById('二号额外加成');
+	window.三号基础强度 = document.getElementById('三号基础强度');
+	window.三号额外加成 = document.getElementById('三号额外加成');
+	window.四号基础强度 = document.getElementById('四号基础强度');
+	window.四号额外加成 = document.getElementById('四号额外加成');
+	window.五号基础强度 = document.getElementById('五号基础强度');
+	window.五号额外加成 = document.getElementById('五号额外加成');
+	window.六号额外加成 = document.getElementById('六号额外加成');
+	window.其他整体加成 = document.getElementById('其他整体加成');
+	window.最终加成 = document.getElementById('最终加成');
+</script>
+<!-- 实现计算方法 -->
+<script>
+	function 计算() {
+		const 一号基础强度 = getValue(window.一号基础强度);
+		const 一号额外加成 = getValue(window.一号额外加成);
+		const 二号基础强度 = getValue(window.二号基础强度);
+		const 二号额外加成 = getValue(window.二号额外加成);
+		const 三号基础强度 = getValue(window.三号基础强度);
+		const 三号额外加成 = getValue(window.三号额外加成);
+		const 四号基础强度 = getValue(window.四号基础强度);
+		const 四号额外加成 = getValue(window.四号额外加成);
+		const 五号基础强度 = getValue(window.五号基础强度);
+		const 五号额外加成 = getValue(window.五号额外加成);
+		const 六号额外加成 = getValue(window.六号额外加成);
+		const 其他整体加成 = getValue(window.其他整体加成);
+		const 强度 = [一号基础强度, 二号基础强度, 三号基础强度, 四号基础强度, 五号基础强度];
+		const 加成 = [一号额外加成, 二号额外加成, 三号额外加成, 四号额外加成, 五号额外加成, 六号额外加成];
+		const 系数调整 = 加成.reduce((r, e) => (r * (1 + e / 100)), 1);
+		const 总强度 = 强度.reduce((r, e) => (r * (1 + e * 系数调整 / 100)), 1);
+		最终加成.innerHTML = showValue(总强度 * (1 + 其他整体加成 / 100) - 1, 100) + '%';
+	}
+</script>
+<!-- 触发一次计算方法 -->
+<script>
+	计算();
+</script>
+</html>

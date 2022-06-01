@@ -68,7 +68,7 @@
 		return node.value.match(/[^\d.]/) && +(eval(node.value)) || +node.value || 0;
 	}
 	function showValue(num, rate = 1) {
-		return (~~(num * 100 * rate)) / 100;
+		return (Math.round(num * 100 * rate)) / 100;
 	}
 
 	function 计算() {
@@ -98,7 +98,7 @@
 
 	document.querySelectorAll('input').forEach(dom => dom.onmousewheel = e => {
 		const dom = e.target;
-		dom.value = ~~(100 * (getValue(dom) + (e.deltaY < 0 ? 1 : -1) * (+dom.dataset.step || 1))) / 100;
+		dom.value = Math.round(100 * (getValue(dom) + (e.deltaY < 0 ? 1 : -1) * (+dom.dataset.step || 1))) / 100;
 		dom.value = Math.min(Math.max(dom.value, dom.min || 0), dom.max || 999999);
 		计算();
 	});
