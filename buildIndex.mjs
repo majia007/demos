@@ -19,7 +19,7 @@ const links = [];
 })(files, rootDir);
 
 fs.writeFileSync('index.md', `
-${links.join('\n')}
+${links.join('\r\n')}
 `, {encoding: 'utf8'});
 
 console.log(new Date());

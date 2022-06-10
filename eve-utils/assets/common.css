@@ -1,0 +1,14 @@
+label, input, output {
+	display: block;
+	margin: 4px 0;
+	font-size: 14px;
+}
+output {
+	white-space: pre;
+}
+hr {
+	margin: 8px 0;
+}
+input + hr {
+	margin-top: 12px;
+}
