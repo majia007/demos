@@ -14,6 +14,8 @@
 		<input data-default="10000" type="text" id="最佳距离">
 		<label for="失准距离">失准距离</label>
 		<input data-default="10000" type="text" id="失准距离">
+		<label for="原始输出">原始输出</label>
+		<input data-default="1000" type="text" id="原始输出">
 		<hr>
 		<label for="信号半径">信号半径</label>
 		<input data-default="50" type="text" id="信号半径">
@@ -22,8 +24,10 @@
 		<label for="目标速度">目标速度(<span id="目标速度值"></span>m/s)</label>
 		<input data-default="100" type="range" id="目标速度" max="1500" min="0" style="width: 100%;">
 		<hr>
-		<label for="结果">结果</label>
-		<output id="结果"></output>
+		<label for="命中率">命中率</label>
+		<output id="命中率"></output>
+		<label for="有效输出">有效输出</label>
+		<output id="有效输出"></output>
 		<hr>
 		<button onclick="openNewWindow()">新窗口</button>
 	</section>
@@ -41,7 +45,9 @@
 	window.目标距离 = dgi('目标距离');
 	window.最佳距离 = dgi('最佳距离');
 	window.失准距离 = dgi('失准距离');
-	window.结果 = dgi('结果');
+	window.命中率 = dgi('命中率');
+	window.原始输出 = dgi('原始输出');
+	window.有效输出 = dgi('有效输出');
 </script>
 <!-- 实现计算方法 -->
 <script>
@@ -53,11 +59,13 @@
 		const 目标距离 = getValue(window.目标距离);
 		const 最佳距离 = getValue(window.最佳距离);
 		const 失准距离 = getValue(window.失准距离);
+		const 原始输出 = getValue(window.原始输出);
 		目标速度值.textContent = 目标速度;
 
-		const 角目标速度 = 目标速度 / (2 * Math.PI * 目标距离);
-		const result = 0.5 ** (((角目标速度 * 信号分辨率) / (炮台转速 * 信号半径)) ** 2 + (失准距离 ? Math.max(0, 目标距离 - 最佳距离) / 失准距离 : 0) ** 2);
-		window.结果.textContent = `${showValue(result, 100)} %`;
+		const 目标角速度 = 目标速度 / 目标距离;
+		const result = 0.5 ** (((目标角速度 * 信号分辨率) / (炮台转速 * 信号半径)) ** 2 + (失准距离 ? Math.max(0, 目标距离 - 最佳距离) / 失准距离 : 0) ** 2);
+		window.命中率.textContent = `${showValue(result, 100)} %`;
+		window.有效输出.textContent = `${showValue(result, 原始输出)}`;
 	}
 </script>
 </html>
