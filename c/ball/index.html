@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <title>ball</title>
@@ -15,20 +15,20 @@ p {line-height: 2.5em;}
 <body>
 <canvas id="paints" width="1000" height="600"></canvas>
 <p>
-	width: <input id="width" type="number" value="1000">
-	height: <input id="height" type="number" value="600">
-	balls: <input id="balls" type="number" value="22">
-	maxR: <input id="maxR" type="number" value="88">
-	minR: <input id="minR" type="number" value="11"><br>
-	maxV: <input id="maxV" type="number" value="15">
-	minV: <input id="minV" type="number" value="3">
-	aX: <input id="aX" type="number" value="0">
-	aY: <input id="aY" type="number" value="0"><br>
-	maxP: <input id="maxP" type="number" value="1">
-	minP: <input id="minP" type="number" value="1">
-	D: <input id="D" type="number" value="2"><br>
-	loss-wall: <input id="loss-wall" type="number" value="0.03">
-	loss-ball: <input id="loss-ball" type="number" value="0.03">
+	<label for="width">width</label>: <input id="width" type="number" value="1000">
+	<label for="height">height</label>: <input id="height" type="number" value="600">
+	<label for="balls">balls</label>: <input id="balls" type="number" value="22">
+	<label for="maxR">maxR</label>: <input id="maxR" type="number" value="88">
+	<label for="minR">minR</label>: <input id="minR" type="number" value="11"><br>
+	<label for="maxV">maxV</label>: <input id="maxV" type="number" value="15">
+	<label for="minV">minV</label>: <input id="minV" type="number" value="3">
+	<label for="aX">aX</label>: <input id="aX" type="number" value="0">
+	<label for="aY">aY</label>: <input id="aY" type="number" value="0"><br>
+	<label for="maxP">maxP</label>: <input id="maxP" type="number" value="1">
+	<label for="minP">minP</label>: <input id="minP" type="number" value="1">
+	<label for="D">D</label>: <input id="D" type="number" value="2"><br>
+	<label for="loss-wall">loss-wall</label>: <input id="loss-wall" type="number" value="0.03">
+	<label for="loss-ball">loss-ball</label>: <input id="loss-ball" type="number" value="0.03">
 	<button onclick="chen.debug = !chen.debug; this.innerHTML='debug (now:' + (chen.debug?'on':'off') + ')'">debug (now:off)</button>
 	<button id="reset">reset</button>
 	<button id="stop">stop</button>
@@ -60,9 +60,9 @@ const context = paints[0].getContext(`2d`);
 let ballList = [];
 
 let version = 0;
-win.on("keydown", "input", e => {if (e.which == 13) reset[0].click(); return false;});
-stop.click(e => version++);
-reset.click(e => {
+win.on("keydown", "input", e => {if (e.which === 13) reset[0].click(); return false;});
+stop.click(() => version++);
+reset.click(() => {
 	let _width = +width.val();
 	let _height = +height.val();
 	let _balls = +balls.val();
@@ -100,7 +100,7 @@ function 绘制() {
 		ballList.forEach(ball => ball.move(_loss_wall));
 		ballList.forEach(ball => ballList.forEach(_ball => Ball.bump(ball, _ball, _loss_ball)));
 		ballList.forEach(ball => 画圆(context, ball.nx, ball.ny, ball.r, ball.attr.color));
-		if (_version == version) requestAnimationFrame(paint);
+		if (_version === version) requestAnimationFrame(paint);
 	}
 	paint();
 }
@@ -110,7 +110,7 @@ paints.mousedown(e => {for (let ball of ballList) {
 			ball.unbindmove(win);
 			win.off("mouseup", endfunc);
 		}
-		ball.bindmove(win, e.pageX, e.pageY, Ball.拉伸类型_放射);
+		ball.bindmove(win, e.pageX, e.pageY, Ball.拉伸类型_投影);
 		win.mouseup(endfunc);
 		return false;
 	}

@@ -9,6 +9,7 @@
 <p><a href="eve-utils/炮台命中率计算.html">eve-utils/炮台命中率计算.html</a><p>
 <p><a href="eve-utils/等效伤害计算.html">eve-utils/等效伤害计算.html</a><p>
 <p><a href="eve-utils/脑插强度计算.html">eve-utils/脑插强度计算.html</a><p>
+<p><a href="eve-utils/装备叠加计算.html">eve-utils/装备叠加计算.html</a><p>
 <p><a href="lottery.html">lottery.html</a><p>
 <p><a href="sl.html">sl.html</a><p>
 <p><a href="tcs.html">tcs.html</a><p>

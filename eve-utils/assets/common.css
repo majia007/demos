@@ -1,7 +1,9 @@
-label, input, output {
-	display: block;
+label, input[id], output {
 	margin: 4px 0;
 	font-size: 14px;
+}
+label[for], input[id]:not(input[type]), output {
+	display: block;
 }
 output {
 	white-space: pre;
