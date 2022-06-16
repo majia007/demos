@@ -8,6 +8,7 @@ function isCheck(input: HTMLInputElement) {
 }
 // 获取精度
 function getAccuracy(input: HTMLInputElement): number {
+	if (+input.dataset.accuracy) return +input.dataset.accuracy;
 	if (!input.dataset.step) return 100;
 	const length = (String(+input.dataset.step).split('.')[1] || '').length;
 	return length < 3 ? 100 : 10 ** length;
