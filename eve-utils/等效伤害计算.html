@@ -43,7 +43,7 @@
 	function addDpsItem() {
 		dpsIndex++;
 		window.dpsBox.insertAdjacentHTML('beforeend', `
-			<label>输出${dpsIndex}</label>
+			<label style="display: block;">输出${dpsIndex}</label>
 			<input id="dps${dpsIndex}v1" class="damage" type="text" placeholder="伤害分布(电,热,动,爆)">
 			<input id="dps${dpsIndex}v2" class="DPS" type="text" placeholder="DPS">
 		`);
@@ -51,7 +51,6 @@
 		window.计算?.();
 	}
 	document.getElementById('addDps').addEventListener('click', addDpsItem);
-	addDpsItem();
 	addDpsItem();
 </script>
 <script>
@@ -67,7 +66,6 @@
 		window.计算?.();
 	}
 	document.getElementById('addDef').addEventListener('click', addDefItem);
-	addDefItem();
 	addDefItem();
 </script>
 <script>

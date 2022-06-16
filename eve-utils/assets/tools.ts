@@ -6,14 +6,20 @@ const dgi: typeof document.getElementById = (e) => document.getElementById(e);
 function isCheck(input: HTMLInputElement) {
 	return ['radio', 'checkbox'].includes(input.type);
 }
+// 获取精度
+function getAccuracy(input: HTMLInputElement): number {
+	if (!input.dataset.step) return 100;
+	const length = (String(+input.dataset.step).split('.')[1] || '').length;
+	return length < 3 ? 100 : 10 ** length;
+}
 // 获取输入框的值
 function getValue(input: HTMLInputElement): number {
 	if (isCheck(input)) return +input.checked;
 	return input.value.match(/[^\d.]/) && +(eval(input.value)) || +input.value || 0;
 }
 // 格式化数字
-function showValue(num: number, rate: number = 1): number {
-	return (Math.round(num * 100 * rate)) / 100;
+function showValue(num: number, rate: number = 1, accuracy = 1e2): number {
+	return (Math.round(num * accuracy * rate)) / accuracy;
 }
 // 打开新窗口
 function openNewWindow(width = 450, height = 880) {
@@ -37,7 +43,6 @@ function openNewWindow(width = 450, height = 880) {
 			} else {
 				localStorage.setItem(input.id, input.value);
 			}
-
 		}
 		window['计算']?.();
 	}
@@ -46,9 +51,10 @@ function openNewWindow(width = 450, height = 880) {
 			const input = e.target;
 			if (input.value.match(/\w \w/)) return;
 			const offset = (e.deltaY < 0 ? 1 : -1);
-			input.value = String(Math.round(100 * (getValue(input) + offset * (+input.dataset.step || 1))) / 100);
+			const accuracy = getAccuracy(input);
+			input.value = String(Math.round(accuracy * (getValue(input) + offset * (+input.dataset.step || 1))) / accuracy);
 			input.value = String(Math.min(Math.max(+input.value, +(input.dataset.min || input.min) || 0), +(input.dataset.max || input.max) || 9e9));
-			handleInput(e);
+			input.dispatchEvent(new InputEvent('input', {bubbles: true}));
 		}
 	}
 	function handleKeydown(e: KeyboardEvent) {
@@ -58,9 +64,10 @@ function openNewWindow(width = 450, height = 880) {
 			const offset = e.code === 'ArrowUp' ? 1 : e.code === 'ArrowDown' ? -1 : 0;
 			if (!offset) return;
 			e.preventDefault();
-			input.value = String(Math.round(100 * (getValue(input) + offset * (+input.dataset.step || 1))) / 100);
+			const accuracy = getAccuracy(input);
+			input.value = String(Math.round(accuracy * (getValue(input) + offset * (+input.dataset.step || 1))) / accuracy);
 			input.value = String(Math.min(Math.max(+input.value, +(input.dataset.min || input.min) || 0), +(input.dataset.max || input.max) || 999999));
-			handleInput(e);
+			input.dispatchEvent(new InputEvent('input', {bubbles: true}));
 		}
 	}
 	document.addEventListener('focusin', handleFocus);
