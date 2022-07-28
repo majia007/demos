@@ -21,7 +21,7 @@ const pagePathList = [];
 
 const content = pagePathList.map((pagePath) => {
 	const href = pagePath.replace('index.html', '');
-	const button = href.includes('eve-utils') ? `&nbsp;<button onclick="openNewWindow('${href}')">新窗口打开</button>` : '';
+	const button = href.includes('eve-utils') ? `&nbsp;<button onclick="openNewWindow('${href}')">小窗口打开</button>` : '';
 	return `<p><a href="${href}">${href}</a>${button}<p>`;
 }).join('\r\n');
 
