@@ -22,7 +22,7 @@ const pagePathList = [];
 const content = pagePathList.map((pagePath) => {
 	const href = pagePath.replace('index.html', '');
 	const button = href.includes('eve-utils') ? `&nbsp;<button onclick="openNewWindow('${href}')">小窗口打开</button>` : '';
-	return `<p><a href="${href}">${href}</a>${button}<p>`;
+	return `\t<p><a href="${href}">${href}</a>${button}<p>`;
 }).join('\r\n');
 
 const template = fs.readFileSync('./template.html', {encoding: 'utf8'});
