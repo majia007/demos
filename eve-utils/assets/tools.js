@@ -26,8 +26,8 @@ function showValue(num, rate = 1, accuracy = 1e2) {
     return (Math.round(num * accuracy * rate)) / accuracy;
 }
 // 打开新窗口
-function openNewWindow(width = 450, height = 880) {
-    window.open(location.href, '_blank', `width=${width},height=${height},left=${window.screenLeft + 32},top=${window.screenTop + 32}`);
+function openNewWindow(href = location.href, width = 450, height = 880) {
+    window.open(href, '_blank', `width=${width},height=${height},left=${window.screenLeft + 32},top=${window.screenTop + 32}`);
 }
 // 绑定 input 相关数值操作
 (function () {
