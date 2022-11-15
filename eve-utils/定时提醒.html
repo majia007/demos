@@ -11,6 +11,12 @@
 	<script>
 		if (!window.workerTimers) alert('初始化失败');
 	</script>
+	<style>
+		output b {
+			display: inline-block;
+			width: 42px;
+		}
+	</style>
 </head>
 <body>
 	<p>
@@ -19,20 +25,23 @@
 		<input type="text" placeholder="提示间隔 分.秒" id="cd" data-bind="0">
 		<br>
 		<input type="text" placeholder="提示语" id="tip" data-bind="0">
+	</p>
 	<hr>
 	<button onclick="reset()">设定</button>
 	<button onclick="openNewWindow()">新窗口</button>
-	</p>
 	<p>
+		<output id="clock"></output>
+		<br>
 		<output id="out"></output>
 	</p>
 	<script>
 		const w = 480;
 		const h = 640;
-		const out = document.getElementById('out');
 		const nextTime = document.getElementById('nextTime');
 		const cd = document.getElementById('cd');
 		const tip = document.getElementById('tip');
+		const clock = document.getElementById('clock');
+		const out = document.getElementById('out');
 		const format = new Intl.DateTimeFormat('zh-Hans-CN', {
 			hour12: false,
 			year: 'numeric',
@@ -43,6 +52,15 @@
 			second: '2-digit',
 		});
 		const getCd = () => cd.value.trim() && cd.value.trim().split('.').reduce((m, s) => 1e3 * ((+m || 0) * 60 + (+s || 0))) || 10 * 60e3;
+
+		// 时钟
+		(function loop() {
+			clock.innerHTML = `<b>now</b> ${format.format(new Date())}`;
+			const delay = 1000 - (Date.now() % 1000);
+			setTimeout(loop, delay);
+		})();
+
+		// 倒计时
 		let first = true;
 		let ti;
 		function popWindow(nextPopDate) {
@@ -58,7 +76,7 @@
 			const cd = getCd();
 			nextPopDate = nextPopDate || new Date(+now + cd);
 			while (+nextPopDate < +now) nextPopDate = new Date(+nextPopDate + cd);
-			out.innerHTML = `now: ${format.format(now)}<br>next: ${format.format(nextPopDate)}`;
+			out.innerHTML = `<b>last</b> ${format.format(now)}<br><b>next</b> ${format.format(nextPopDate)}`;
 			ti = workerTimers.setTimeout(() => popWindow(+nextPopDate + cd), +nextPopDate - now);
 		}
 		function reset() {
